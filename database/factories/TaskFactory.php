@@ -23,8 +23,7 @@ class TaskFactory extends Factory
     {
         return [
             'name' => $this->faker->text(20),
-            'description' => $this->faker->text(40),
-            'when' => $this->faker->dateTime(),
+            'when' => $this->faker->date(),
             'reminder' => $this->faker->numberBetween(0, 1)
         ];
     }

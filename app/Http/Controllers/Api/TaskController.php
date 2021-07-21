@@ -26,7 +26,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        return view('tasks.create');
+        // 
     }
 
     /**
@@ -39,7 +39,6 @@ class TaskController extends Controller
     {
         $task = Task::create([
             'name' => $request->name,
-            'description' => $request->description,
             'when' => $request->when,
             'reminder' => $request->reminder
         ]);
@@ -80,7 +79,6 @@ class TaskController extends Controller
     {
         $task->update([
             'name' => $request->name,
-            'description' => $request->description,
             'when' => $request->when,
             'reminder' => $request->reminder
         ]);

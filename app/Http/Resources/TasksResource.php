@@ -16,10 +16,10 @@ class TasksResource extends JsonResource
     {
         return [
             'id' => (string)$this->id,
+            'url' => $_ENV['APP_URL'],
             'type' => 'Tasks',
             'attributes' => [
                 'name' => $this->name,
-                'description' => $this->description,
                 'when' => $this->when,
                 'reminder' => $this->reminder
             ]
