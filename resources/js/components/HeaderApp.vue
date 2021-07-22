@@ -12,13 +12,13 @@
         </h3>
         <button @click="toggleForm" :class="[showForm ? 'btn-danger' : 'btn-success']" class="btn">{{ btnTitle() }}</button>
     </div>
-    <Form v-if="showForm" @add-task="addTask"/>
+    <add-task v-if="showForm" @add-task="addTask"></add-task>
     </div>
 
 </template>
 
 <script>
-import Form from './Form.vue'
+import AddTask from './AddTask.vue'
 
 export default {
     name: 'HeaderApp',
@@ -28,7 +28,7 @@ export default {
         }
     },
     components: {
-        "Form": Form
+        "add-task": AddTask
     },
     methods: {
         toggleForm() {

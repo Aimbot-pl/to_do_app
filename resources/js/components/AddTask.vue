@@ -33,7 +33,7 @@
 
 <script>
 export default {
-	name: "Form",
+	name: "AddTask",
 	data() {
 		return {
             data: {
