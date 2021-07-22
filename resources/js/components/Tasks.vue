@@ -1,7 +1,7 @@
 <template>
 	<ul style="list-group p-3">
 		<li
-			v-for="task in tasks"
+			v-for="task in tasks.data"
 			:key="task.id"
 			:class="[task.attributes.reminder ? 'remind' : '']"
 			class="list-group-item"
@@ -15,7 +15,10 @@
 			</div>
 
 			<div v-else>
-				<div @dblclick="dbClick(task)" class="d-flex justify-content-between">
+				<div
+					@dblclick="dbClick(task)"
+					class="d-flex justify-content-between"
+				>
 					<h3>{{ task.attributes.name }}</h3>
 					<div>
 						<button
@@ -65,7 +68,7 @@ export default {
 			return this.isUpdating && this.updatingTask === id ? true : false;
 		},
 		updateTask(data) {
-			this.$emit('update-task', data);
+			this.$emit("update-task", data);
 			this.closeForm();
 		},
 		closeForm() {
@@ -77,10 +80,10 @@ export default {
 				id: data.id,
 				name: data.attributes.name,
 				when: data.attributes.when,
-				reminder: !data.attributes.reminder
+				reminder: !data.attributes.reminder,
 			};
 			this.updateTask(newData);
-		}
+		},
 	},
 };
 </script>

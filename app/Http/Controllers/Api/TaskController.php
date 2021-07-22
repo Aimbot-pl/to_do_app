@@ -16,7 +16,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return TasksResource::collection(Task::all());
+        return TasksResource::collection(Task::orderby('when')->paginate(5));
     }
 
     /**

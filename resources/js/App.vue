@@ -3,7 +3,37 @@
 		class="container my-3 p-3 col-sm-10 col-md-6 border border-2 rounded-2"
 	>
 		<header-app @add-task="addTask"></header-app>
-		<Tasks @update-task="updateTask" @delete-task="deleteTask" :tasks="this.tasks" />
+		<div v-if="isLoaded">
+			<Tasks
+				@update-task="updateTask"
+				@delete-task="deleteTask"
+				:tasks="this.tasks"
+			/>
+			<nav>
+				<ul class="pagination mt-3 justify-content-center">
+					<li
+						@click="loadTasks(this.tasks.links.prev)"
+						:class="[this.tasks.links.prev ? '' : 'disabled']"
+						class="page-item"
+					>
+						<a class="page-link"> &laquo; Previous </a>
+					</li>
+					<li class="page-item active">
+						<a class="page-link">
+							Page {{ this.tasks.meta.current_page }} of {{ this.tasks.meta.last_page }} 
+						</a>
+					</li>
+					<li
+						@click="loadTasks(this.tasks.links.next)"
+						:class="[this.tasks.links.next ? '' : 'disabled']"
+						class="page-item"
+					>
+						<a class="page-link"> Next &raquo; </a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<h3 v-else>Loading...</h3>
 	</div>
 </template>
 
@@ -20,56 +50,72 @@ export default {
 	data() {
 		return {
 			tasks: [],
+			errors: [],
+			isLoaded: false,
 		};
 	},
-    created() {
-        this.loadTasks()
-    },
+	created() {
+		this.loadTasks();
+	},
 	methods: {
-		async loadTasks() {
-            const res = await axios.get('/api/tasks')
-                .then((res) => {
-                    this.tasks = res.data.data;
-                }).catch((error) => {
-                    console.log(error)
-                })
-        },
-        async addTask(data) {
-			const res = await axios.post('/api/tasks', {
-				name: data.name,
-				when: data.when,
-				reminder: data.reminder
-			}).then((res) => {
-				console.log(res);
-				this.loadTasks();
-			}).catch((err) => {
-				console.log(err);
-			})
-        },
+		async loadTasks(site = "/api/tasks") {
+			if (site) {
+				this.isLoaded = false;
+				const res = await axios
+					.get(site)
+					.then((res) => {
+						this.tasks = res.data;
+						this.isLoaded = true;
+					})
+					.catch((err) => {
+						this.errors = err
+					});
+			}
+		},
+		async addTask(data) {
+			const res = await axios
+				.post("/api/tasks", {
+					name: data.name,
+					when: data.when,
+					reminder: data.reminder,
+				})
+				.then((res) => {
+					this.loadTasks();
+				})
+				.catch((err) => {
+					this.errors = err;
+				});
+		},
 		async deleteTask(id) {
-			const res = await axios.delete('/api/tasks/'+id)
+			const res = await axios
+				.delete("/api/tasks/" + id)
 				.then((res) => {
 					this.tasks = res.data.data;
-				}).catch((err) => {
-					console.log(err);
+				})
+				.catch((err) => {
+					this.errors = err;
 				});
 		},
 		async updateTask(data) {
-			const res = await axios.put('/api/tasks/'+data.id, {
-				name: data.name,
-				when: data.when,
-				reminder: data.reminder
-			})
-			.then((res) => {
-				console.log(res);
-				this.loadTasks();
-			}).catch((err) => {
-				console.log(err);
-			})
-		}
+			const res = await axios
+				.put("/api/tasks/" + data.id, {
+					name: data.name,
+					when: data.when,
+					reminder: data.reminder,
+				})
+				.then((res) => {
+					this.loadTasks();
+				})
+				.catch((err) => {
+					this.errors = err;
+				});
+		},
 	},
 };
 </script>
 
 <style>
+a:hover {
+	cursor: pointer;
+}
 </style>

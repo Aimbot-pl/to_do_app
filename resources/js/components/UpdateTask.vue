@@ -42,7 +42,7 @@ export default {
                 id: this.task.id,
                 name: this.task.attributes.name,
                 when: this.task.attributes.when,
-                reminder: !!this.task.attributes.reminder
+                reminder: !!this.task.attributes.reminder,
             }
         }
     }
