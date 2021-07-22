@@ -21144,7 +21144,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 _context3.next = 2;
                 return axios["delete"]("/api/tasks/" + id).then(function (res) {
-                  _this3.tasks = res.data.data;
+                  _this3.loadTasks();
                 })["catch"](function (err) {
                   _this3.errors = err;
                 });

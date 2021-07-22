@@ -90,7 +90,7 @@ export default {
 			const res = await axios
 				.delete("/api/tasks/" + id)
 				.then((res) => {
-					this.tasks = res.data.data;
+					this.loadTasks();
 				})
 				.catch((err) => {
 					this.errors = err;
