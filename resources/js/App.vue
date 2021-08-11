@@ -2,7 +2,7 @@
 	<div
 		class="container my-3 p-3 col-sm-10 col-md-6 border border-2 rounded-2"
 	>
-		<header-app @add-task="addTask"></header-app>
+		<header-app @add-task="addTask" @flash-form="flashForm" :errors="responseErrors" :isTaskCreated="isTaskCreated"></header-app>
 		<div v-if="isLoaded">
 			<Tasks
 				@update-task="updateTask"
@@ -20,7 +20,8 @@
 					</li>
 					<li class="page-item active">
 						<a class="page-link">
-							Page {{ this.tasks.meta.current_page }} of {{ this.tasks.meta.last_page }} 
+							Page {{ this.tasks.meta.current_page }} of
+							{{ this.tasks.meta.last_page }}
 						</a>
 					</li>
 					<li
@@ -52,6 +53,7 @@ export default {
 			tasks: [],
 			errors: [],
 			isLoaded: false,
+			status: null,
 		};
 	},
 	created() {
@@ -68,7 +70,7 @@ export default {
 						this.isLoaded = true;
 					})
 					.catch((err) => {
-						this.errors = err
+						this.errors = err;
 					});
 			}
 		},
@@ -80,9 +82,12 @@ export default {
 					reminder: data.reminder,
 				})
 				.then((res) => {
+					console.log(res);
 					this.loadTasks();
+					this.status = res.status;
 				})
 				.catch((err) => {
+					console.log(err);
 					this.errors = err;
 				});
 		},
@@ -93,6 +98,7 @@ export default {
 					this.loadTasks();
 				})
 				.catch((err) => {
+					this.status = err.status;
 					this.errors = err;
 				});
 		},
@@ -110,6 +116,18 @@ export default {
 					this.errors = err;
 				});
 		},
+		flashForm() {
+			this.errors = [];
+			this.status = null;
+		}
+	},
+	computed: {
+		responseErrors() {
+			return this.errors.response ? this.errors.response.data : {};
+		},
+		isTaskCreated() {
+			return (this.status === 201) ? true : false;
+		}
 	},
 };
 </script>

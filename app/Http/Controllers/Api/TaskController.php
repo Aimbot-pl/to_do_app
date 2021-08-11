@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TaskRequest;
 use App\Http\Resources\TasksResource;
 use App\Models\Task;
-use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -32,17 +32,14 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\TaskRequest $taskRequest
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $task = Task::create([
-            'name' => $request->name,
-            'when' => $request->when,
-            'reminder' => $request->reminder
-        ]);
+    public function store(TaskRequest $taskRequest)
+    {   
+        $task = Task::create($taskRequest->all());
         $task->save();
+
         return new TasksResource($task);
     }
 
@@ -71,17 +68,13 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \App\Http\Requests\TaskRequest $taskRequest
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Task $task)
+    public function update(TaskRequest $taskRequest , Task $task)
     {
-        $task->update([
-            'name' => $request->name,
-            'when' => $request->when,
-            'reminder' => $request->reminder
-        ]);
+        $task->update($taskRequest->all());
 
         return new TasksResource($task);
     }
@@ -98,3 +91,4 @@ class TaskController extends Controller
         return TasksResource::collection(Task::all());
     }
 }
+

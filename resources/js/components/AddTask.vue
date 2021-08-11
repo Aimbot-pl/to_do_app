@@ -1,5 +1,7 @@
 <template>
-	<form @submit.prevent="addTask" class="py-3 px-2 border rounded-2">
+	<form @submit.prevent="addTask" @reset="resetForm" class="py-3 px-2 border rounded-2">
+		<h3 class="error" v-if="errors.message && !isTaskCreated">{{ errors.message }} </h3>
+		<h3 v-else-if="isTaskCreated">{{ taskCreated }} </h3>
 		<div class="mb-3 px-2">
 			<div class="d-flex justify-content-between">
 				<input
@@ -22,11 +24,27 @@
 			</div>
 		</div>
 		<div class="text-center">
-			<input
-				type="submit"
-				class="btn btn-outline-success"
-				value="Add task"
-			/>
+			<div v-if="errors.errors && !isTaskCreated">
+				<div v-for="field in errors.errors" :key="field">
+					<div v-for="err in field" :key="err">
+						<div class="invalid-feedback d-block">
+							{{ err }}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="mt-3">
+				<input
+					type="submit"
+					class="btn btn-outline-success mx-2"
+					value="Add task"
+				/>
+				<input
+					type="reset"
+					class="btn btn-outline-danger mx-2"
+					value="Reset form"
+				/>
+			</div>
 		</div>
 	</form>
 </template>
@@ -34,6 +52,16 @@
 <script>
 export default {
 	name: "AddTask",
+	props: {
+		errors: {
+			type: Object,
+            required: false,
+        },
+		isTaskCreated: {
+			type: Boolean,
+            required: true,
+        },
+	},
 	data() {
 		return {
             data: {
@@ -46,13 +74,22 @@ export default {
     methods: {
         addTask() {
             this.$emit('add-task', this.data);
+        },
+		resetForm() {
 			this.data = {
 				name: "",
 				when: "",
 				reminder: false
 			};
-        }
-    }
+			this.$emit('flash-form');
+		}
+    },
+	computed: {
+		taskCreated() {
+			this.$emit('flash-form');
+			return 'Task has been created';
+		}
+	},
 };
 </script>
 
