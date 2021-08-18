@@ -1,6 +1,9 @@
 <template>
-	<div class="row justify-content-around mt-5">
-		<div class="col-12 col-sm-6 my-auto">
+	<div v-if="accessToken">
+		<Feed/>
+	</div>
+	<div v-else class="row justify-content-around mt-5">
+		<div class="col-12 col-md-6 my-auto">
 			<h1>Laravel application</h1>
 			<p>
 				Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae
@@ -9,7 +12,7 @@
 				magni alias similique.
 			</p>
 		</div>
-		<div class="col-12 col-sm-4 border border-2 rounded-3 px-5 py-3">
+		<div class="col-12 col-md-6 col-lg-4 border border-2 rounded-3 px-5 py-3">
 			<Login />
 			<hr />
 
@@ -18,6 +21,7 @@
 					class="btn btn-success px-5"
 					data-bs-toggle="modal"
 					data-bs-target="#register"
+					@click="showModal = true"
 				>
 					Register
 				</button>
@@ -32,7 +36,7 @@
 			aria-labelledby="registerModalLabel"
 			aria-hidden="true"
 		>
-			<div class="modal-dialog">
+			<div class="modal-dialog modal-dialog-scrollable">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="registerModalLabel">
@@ -43,10 +47,11 @@
 							class="btn-close"
 							data-bs-dismiss="modal"
 							aria-label="Close"
+							@click="showModal = false"
 						></button>
 					</div>
 					<div class="modal-body">
-						<Register />
+						<Register v-if="showModal" />
 					</div>
 				</div>
 			</div>
@@ -55,14 +60,25 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import Login from "../components/account/Login.vue";
 import Register from "../components/account/Register.vue";
+import Feed from "../components/account/Feed.vue";
 
 export default {
 	name: "Home",
+	data() {
+		return {
+			showModal: false,
+		}
+	},
 	components: {
 		Login,
 		Register,
+		Feed,
 	},
+	computed: {
+		...mapState(['accessToken'])
+	}
 };
 </script>
