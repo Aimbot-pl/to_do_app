@@ -1,15 +1,15 @@
 <template>
     <div class="mx-auto col-12 col-sm-6 col-md-4">
-        <Login/>
+        <LoginComp/>
     </div>
 </template>
 
 <script>
-import Login from '../components/account/Login.vue'
+import LoginComp from '../components/account/Login.vue'
 export default {
     name: 'Login',
-    components: [
-        Login
-    ],
+    components: {
+        LoginComp
+    },
 }
 </script>

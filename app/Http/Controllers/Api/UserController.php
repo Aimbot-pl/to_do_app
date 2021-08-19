@@ -79,7 +79,7 @@ class UserController extends Controller
     {
         $user = User::where('id', $id)->first();
         if (!$user) {
-            return response('User not exists.', 404);
+            return response(['message' => 'User not exists.'], 404);
         }
         return new UserResource($user);
     }
@@ -93,14 +93,12 @@ class UserController extends Controller
      */
     public function update(UserUpdateProfileRequest $userUpdateProfileRequest, User $user)
     {
-        $fields = $userUpdateProfileRequest->validated();
+        $userUpdateProfileRequest->validated();
         if (!$user) {
-            return response('This user does not exists.', 404);
+            return response(['message' => 'This user does not exists.'], 404);
         }
-        // return $userUpdateProfileRequest->all();
         $user->update($userUpdateProfileRequest->all());
-        return response('Changes confirmed', 201);
-        return 'ok';
+        return response(['message' => 'Changes confirmed'], 201);
     }
 
     /**

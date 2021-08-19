@@ -21229,7 +21229,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)({
     accessToken: 'accessToken',
-    errors: 'errors',
     userId: 'userId'
   })),
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['logout', 'fetchAuth'])), {}, {
@@ -21453,6 +21452,7 @@ window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+axios.defaults.withCredencials = true;
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
@@ -21480,7 +21480,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../router */ "./resources/js/router.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../router */ "./resources/js/router.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -21488,19 +21490,25 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   state: function state() {
     return {
+      registerngIn: false,
+      registerError: null,
       accessToken: null,
       loggingIn: false,
       loginError: null,
       userId: null,
       userData: null,
       userFetching: false,
-      userError: null
+      userError: undefined
     };
   },
   getters: {
+    registerErrors: function registerErrors(state) {
+      return state.registerError;
+    },
     loginErrors: function loginErrors(state) {
       return state.loginError;
     },
@@ -21518,6 +21526,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   mutations: {
+    registerStart: function registerStart(state) {
+      return state.registeringIn = true;
+    },
+    registerStop: function registerStop(state, errorMessage) {
+      state.registerngIn = false;
+
+      if (typeof errorMessage === 'string' || errorMessage instanceof String) {
+        state.registerError = errorMessage;
+      } else {
+        state.registerError = _objectSpread(_objectSpread({}, errorMessage.errors), {}, {
+          message: errorMessage.message
+        });
+      }
+    },
     loginStart: function loginStart(state) {
       return state.loggingIn = true;
     },
@@ -21527,7 +21549,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     logout: function logout(state) {
       sessionStorage.clear();
-      state.accessToken = null, state.userId = null;
+      state.accessToken = null;
+      state.userId = null;
+      state.userData = null;
     },
     updateAuth: function updateAuth(state, payload) {
       state.accessToken = payload.accessToken;
@@ -21540,16 +21564,41 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       state.userFetching = false;
       state.userError = error;
     },
+    cleanLoginErrors: function cleanLoginErrors(state) {
+      state.loginError = null;
+    },
     fetchData: function fetchData(state, userData) {
-      state.userData = _objectSpread({}, userData.data);
+      if (userData) {
+        state.userData = _objectSpread({}, userData.data);
+      } else {
+        state.userData = userData;
+      }
     }
   },
   actions: {
-    login: function login(_ref, credentials) {
-      var commit = _ref.commit,
-          state = _ref.state;
+    signUp: function signUp(_ref, credentials) {
+      var commit = _ref.commit;
+      commit('registerStart');
+      console.log(credentials);
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/register", {
+        nick: credentials.nick,
+        first_name: credentials.first_name,
+        last_name: credentials.last_name,
+        email: credentials.email,
+        password: credentials.password,
+        password_confirmation: credentials.password_confirmation,
+        gender: credentials.gender
+      }).then(function (res) {
+        commit('registerStop', res.data.message);
+      })["catch"](function (err) {
+        commit('registerStop', err.response.data);
+      });
+    },
+    login: function login(_ref2, credentials) {
+      var commit = _ref2.commit,
+          state = _ref2.state;
       commit('loginStart');
-      axios.post("/api/login", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/login", {
         email: credentials.username,
         password: credentials.password
       }).then(function (res) {
@@ -21560,6 +21609,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           accessToken: sessionStorage.getItem('accessToken'),
           userId: sessionStorage.getItem('userId')
         });
+        return state.userId;
       })["catch"](function (err) {
         commit('loginStop', err.response.data.message);
         commit('updateAuth', {
@@ -21568,44 +21618,86 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       });
     },
-    logout: function logout(_ref2) {
-      var commit = _ref2.commit;
-      commit('logout');
-      _router__WEBPACK_IMPORTED_MODULE_0__.default.replace('/login');
-    },
-    fetchAuth: function fetchAuth(_ref3) {
+    doCleanLoginErrors: function doCleanLoginErrors(_ref3) {
       var commit = _ref3.commit;
+      commit('cleanLoginErrors');
+    },
+    logout: function logout(_ref4) {
+      var commit = _ref4.commit;
+      commit('logout');
+      _router__WEBPACK_IMPORTED_MODULE_1__.default.replace({
+        name: 'home'
+      });
+    },
+    fetchAuth: function fetchAuth(_ref5) {
+      var commit = _ref5.commit;
       commit('updateAuth', {
         accessToken: sessionStorage.getItem('accessToken'),
         userId: sessionStorage.getItem('userId')
       });
     },
-    fetchUserData: function fetchUserData(_ref4) {
-      var state = _ref4.state,
-          commit = _ref4.commit;
+    fetchUserData: function fetchUserData(_ref6) {
+      var state = _ref6.state,
+          commit = _ref6.commit;
       commit('fetchingStart');
-      axios.get('/api/user/' + state.userId).then(function (res) {
+      console.log('fetchingStart');
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        method: 'get',
+        url: "/api/user/".concat(state.userId),
+        headers: {
+          Accept: 'application/json',
+          Authorization: "Bearer ".concat(state.accessToken)
+        }
+      }).then(function (res) {
         commit('fetchingStop', null);
         commit('fetchData', res.data);
-        console.log(state.userData);
       })["catch"](function (err) {
-        console.log(err);
-        commit('fetchingStop', err);
+        console.log(err.response);
+        commit('fetchingStop', err.response.data);
         commit('fetchData', null);
+
+        if (state.userError.message === "Unauthenticated.") {
+          _router__WEBPACK_IMPORTED_MODULE_1__.default.replace({
+            path: '/login'
+          });
+        }
       });
     },
-    saveChanges: function saveChanges(_ref5, submittedData) {
-      var state = _ref5.state,
-          commit = _ref5.commit,
-          dispatch = _ref5.dispatch;
+    saveChanges: function saveChanges(_ref7, submittedData) {
+      var state = _ref7.state,
+          commit = _ref7.commit,
+          dispatch = _ref7.dispatch;
       return dispatch('fetchUserData').then(function () {
+        console.log(JSON.stringify(state.userData) === JSON.stringify(submittedData));
+
         if (JSON.stringify(state.userData) === JSON.stringify(submittedData)) {
-          state.userError.message = 'Data already exists ';
+          state.userError = {
+            message: 'Data already exists '
+          };
+        } else if (!submittedData) {
+          state.userError = {
+            message: 'Given data is empty'
+          };
         } else {
-          axios.put('/api/user/' + state.userId, _objectSpread({}, submittedData)).then(function (res) {
-            console.log(res);
-          })["catch"](function (err) {
-            console.log(err.response);
+          commit('fetchingStart');
+          axios__WEBPACK_IMPORTED_MODULE_0___default().get('/sanctum/csrf-cookie').then(function () {
+            axios__WEBPACK_IMPORTED_MODULE_0___default()({
+              method: 'put',
+              url: "/api/user/".concat(state.userId),
+              data: _objectSpread({}, submittedData),
+              headers: {
+                Accept: 'application/json',
+                Authorization: "Bearer ".concat(state.accessToken)
+              }
+            }).then(function (res) {
+              console.log(res);
+              commit('fetchingStop', null);
+              commit('fetchData', res.data);
+            })["catch"](function (err) {
+              console.log(err.response);
+              commit('fetchingStop', err);
+              commit('fetchData', null);
+            });
           });
         }
       });
@@ -21748,10 +21840,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm-bundler.js");
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./store */ "./resources/js/store.js");
 
+
 var notFound = {
   template: '<h1>Not found</h1>'
 };
-
 var routes = [{
   path: '/:pathMatch(.*)*',
   name: 'not-found',
@@ -21773,7 +21865,7 @@ var routes = [{
   path: '/login',
   name: 'login',
   component: function component() {
-    return __webpack_require__.e(/*! import() */ "resources_js_components_account_Login_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/account/Login.vue */ "./resources/js/components/account/Login.vue"));
+    return __webpack_require__.e(/*! import() */ "resources_js_views_Login_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Login.vue */ "./resources/js/views/Login.vue"));
   }
 }, {
   path: '/register',
@@ -21802,13 +21894,10 @@ var routes = [{
     }
   },
   children: [{
-    path: '',
+    path: '/users/:id/settings',
+    name: 'Settings',
     component: function component() {
       return __webpack_require__.e(/*! import() */ "resources_js_views_Settings_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Settings.vue */ "./resources/js/views/Settings.vue"));
-    },
-    beforeEnter: function beforeEnter(to, from, next) {
-      _store__WEBPACK_IMPORTED_MODULE_0__.default.dispatch('fetchUserData');
-      next();
     }
   }]
 }, {
@@ -49571,7 +49660,7 @@ var index = {
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_views_Home_vue":1,"resources_js_views_Tasks_vue":1,"resources_js_components_account_Login_vue":1,"resources_js_views_Register_vue":1,"resources_js_views_User_vue":1,"resources_js_views_Settings_vue":1,"resources_js_components_Test_vue":1,"resources_js_components_TestSecond_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_views_Home_vue":1,"resources_js_views_Tasks_vue":1,"resources_js_views_Login_vue":1,"resources_js_views_Register_vue":1,"resources_js_views_User_vue":1,"resources_js_views_Settings_vue":1,"resources_js_components_Test_vue":1,"resources_js_components_TestSecond_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

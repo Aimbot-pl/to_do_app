@@ -85,7 +85,6 @@ export default {
 	computed: {
 		...mapGetters({
 			accessToken: 'accessToken',
-			errors: 'errors',
 			userId: 'userId'
 		}),
 	},

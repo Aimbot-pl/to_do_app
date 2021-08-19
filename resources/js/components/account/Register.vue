@@ -9,7 +9,7 @@
 					type="text"
 					id="first-name"
 					name="first-name"
-					v-model="first_name"
+					v-model="localUserData.first_name"
 					class="form-control"
 					aria-label="First name"
 					ref="nameInput"
@@ -29,18 +29,18 @@
 					type="text"
 					id="last-name"
 					name="last-name"
-					v-model="last_name"
+					v-model="localUserData.last_name"
 					class="form-control"
 					aria-label="Last name"
 				/>
-				<password_confirmation
+				<div
 					class="invalid-feedback d-block"
 					v-if="errors && errors.last_name"
 				>
 					<p v-for="error in errors.last_name" :key="error">
 						{{ error }}
 					</p>
-				</password_confirmation>
+				</div>
 			</div>
 		</div>
 		<div class="col-12">
@@ -48,7 +48,7 @@
 			<input
 				type="text"
 				name="nick"
-				v-model="nick"
+				v-model="localUserData.nick"
 				id="nick"
 				class="form-control"
 			/>
@@ -63,7 +63,7 @@
 			<input
 				type="email"
 				name="email"
-				v-model="email"
+				v-model="localUserData.email"
 				id="email"
 				class="form-control"
 			/>
@@ -79,7 +79,7 @@
 				<input
 					type="password"
 					name="password"
-					v-model="password"
+					v-model="localUserData.password"
 					id="password"
 					class="form-control"
 					ref="password"
@@ -110,7 +110,7 @@
 				<input
 					type="password"
 					name="password_confirmation"
-					v-model="passwordConfirmation"
+					v-model="localUserData.password_confirmation"
 					id="password_confirmation"
 					class="form-control"
 					ref="passwordConfirmation"
@@ -146,7 +146,7 @@
 					<input
 						type="radio"
 						name="gender"
-						v-model="gender"
+						v-model="localUserData.gender"
 						id="male"
 						class="mt-1"
 						value="male"
@@ -158,7 +158,7 @@
 					<input
 						type="radio"
 						name="gender"
-						v-model="gender"
+						v-model="localUserData.gender"
 						id="female"
 						class="mt-1"
 						value="female"
@@ -186,20 +186,22 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import togglePassword from '../../helpers/TogglePassword'
 export default {
 	data() {
 		return {
-			first_name: "",
-			nick: "",
-			last_name: "",
-			email: "",
-			password: "",
-			password_confirmation: "",
-			gender: "",
+			localUserData: {
+				first_name: "",
+				nick: "",
+				last_name: "",
+				email: "",
+				password: "",
+				password_confirmation: "",
+				gender: "",
+			},
 			isDisabled: false,
 			errors: {},
-			message: "",
 		};
 	},
 	mounted() {
@@ -207,33 +209,43 @@ export default {
 			this.$refs.nameInput.focus();
 		}, 500);
 	},
+	computed: {
+		...mapGetters({
+			errors: 'registerErrors'
+		})
+	},
 	methods: {
 		...togglePassword,
+		...mapActions({
+			signUp: 'signUp'
+		}),
 		createAccount() {
 			this.isDisabled = true;
 			this.errors = null;
-			axios.get("/sanctum/csrf-cookie").then((response) => {
-				axios
-					.post("/api/register", {
-						nick: this.nick,
-						first_name: this.first_name,
-						last_name: this.last_name,
-						email: this.email,
-						password: this.password,
-						password_confirmation: this.password_confirmation,
-						gender: this.gender,
-					})
-					.then((res) => {
-						this.message = res.data.message;
-					})
-					.catch((err) => {
-						this.errors = err.response.data.errors;
-						this.errors.message = err.response.data.message;
-					})
-					.finally(() => {
-						this.isDisabled = false;
-					});
-			});
+			this.signUp(this.localUserData).then(() => this.isDisabled = false)
+
+			// axios.get("/sanctum/csrf-cookie").then((response) => {
+			// 	axios
+			// 		.post("/api/register", {
+			// 			nick: this.nick,
+			// 			first_name: this.first_name,
+			// 			last_name: this.last_name,
+			// 			email: this.email,
+			// 			password: this.password,
+			// 			password_confirmation: this.password_confirmation,
+			// 			gender: this.gender,
+			// 		})
+			// 		.then((res) => {
+			// 			this.message = res.data.message;
+			// 		})
+			// 		.catch((err) => {
+			// 			this.errors = err.response.data.errors;
+			// 			this.errors.message = err.response.data.message;
+			// 		})
+			// 		.finally(() => {
+			// 			this.isDisabled = false;
+			// 		});
+			// });
 		},
 	},
 };

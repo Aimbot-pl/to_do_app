@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-const notFound = { template: '<h1>Not found</h1>' }
 import store from './store'
+const notFound = { template: '<h1>Not found</h1>' }
 
 const routes = [
     {
@@ -22,7 +22,7 @@ const routes = [
     {
         path: '/login',
         name: 'login',
-        component: () => import('./components/account/Login.vue'),
+        component: () => import('./views/Login.vue'),
     },
     {
         path: '/register',
@@ -46,30 +46,27 @@ const routes = [
         },
         children: [
             {
-                path: '',
+                path: '/users/:id/settings',
+                name: 'Settings',
                 component: () => import('./views/Settings.vue'),
-                beforeEnter: (to, from, next) => {
-                    store.dispatch('fetchUserData')
-                    next()
-                }
             },
-        ]
+        ] 
     },
-    
+
     {
         path: '/forgot-password',
-        name: 'forgotPassword',
-        component: { template: '<div>link</div>' },
+            name: 'forgotPassword',
+                component: { template: '<div>link</div>' },
     },
     {
         path: '/test',
-        name: 'test',
-        component: () => import('./components/Test.vue'),
-    },
+            name: 'test',
+                component: () => import('./components/Test.vue'),
+        },
     {
         path: '/test-second',
-        name: 'testSecond',
-        component: () => import('./components/TestSecond.vue'),
+            name: 'testSecond',
+                component: () => import('./components/TestSecond.vue'),
     },
 ];
 

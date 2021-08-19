@@ -13,7 +13,7 @@
 			</p>
 		</div>
 		<div class="col-12 col-md-6 col-lg-4 border border-2 rounded-3 px-5 py-3">
-			<Login />
+			<LoginComp />
 			<hr />
 
 			<div class="text-center">
@@ -61,7 +61,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import Login from "../components/account/Login.vue";
+import LoginComp from "../components/account/Login.vue";
 import Register from "../components/account/Register.vue";
 import Feed from "../components/account/Feed.vue";
 
@@ -73,7 +73,7 @@ export default {
 		}
 	},
 	components: {
-		Login,
+		LoginComp,
 		Register,
 		Feed,
 	},

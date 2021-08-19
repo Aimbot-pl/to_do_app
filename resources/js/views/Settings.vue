@@ -135,11 +135,12 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 					email: "",
 					gender: "",
 				},
+				message: null,
+				showModal: false,
                 localErrors: {}
             }
         },
-		created() {
-			console.log('fetchUserData()')
+		mounted() {
 			if (this.userData) {
 				this.localUserData = {...this.userData}
 			} else if (this.errors) {
@@ -154,7 +155,30 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 				})
 		},
 		methods: {
-			...mapActions(['fetchUserData', 'saveChanges'])
+			...mapActions(['fetchUserData', 'saveChanges']),
+			closeModal() {
+				this.showModal = false
+				this.message = null
+			}
 		}
     }
 </script>
+
+<style>
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .5);
+  display: table;
+  transition: opacity .3s ease;
+}
+
+.modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+</style>

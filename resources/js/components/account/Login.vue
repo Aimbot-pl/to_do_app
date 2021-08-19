@@ -1,6 +1,7 @@
 <template>
 	<form @submit.prevent="signIn({ username, password })">
-		<h2 v-if="error" class="text-danger">{{ error }}</h2>
+		<h2 v-if="loginErrors" class="text-danger">{{ loginErrors }}</h2>
+		<h2 v-if="userErrors" class="text-danger">{{ userErrors.message }}</h2>
 		<label for="username" class="form-label mt-3">Email</label>
 		<input
 			type="text"
@@ -46,30 +47,40 @@
 import { mapActions, mapGetters, mapState } from "vuex";
 import togglePassword from "../../helpers/TogglePassword";
 export default {
-	name: "Login",
+	name: "LoginComp",
 	data() {
 		return {
 			username: "",
 			password: "",
 		};
 	},
+	created() {
+		if (!this.$route.from) {
+			this.cleanErrors();
+		}
+	},
 	computed: {
-		...mapState(['userId']),
-		...mapGetters({
-			error: 'loginErrors'
-		}),
+		...mapState(["userId"]),
+		...mapGetters(["loginErrors", "userErrors"]),
 	},
 	methods: {
 		...togglePassword,
-		...mapActions(["login"]),
+		...mapActions({
+			login: "login",
+			cleanErrors: "doCleanLoginErrors",
+		}),
 		signIn(credentials) {
-			this.login(credentials).then(() => {
+			setTimeout(() => {
 				if (this.$route.query.redirect) {
 					this.$router.replace(this.$route.query.redirect);
 				} else {
-					this.$router.replace("/");
+					this.$router.replace({
+						name: "user",
+						params: { id: this.$store.state.account.userId },
+					});
 				}
-			})
+			}, 2000);
+			this.login(credentials);
 		},
 	},
 };

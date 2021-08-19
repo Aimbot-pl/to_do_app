@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/user/{id}', [UserController::class, 'show']);
-Route::put('/user/{user}', [UserController::class, 'update']);
-Route::middleware(['auth'])->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
+    Route::put('/user/{user}', [UserController::class, 'update']);
+    Route::get('/user/{id}', [UserController::class, 'show']);
 });
 
 Route::post('/register', [UserController::class, 'register']);
