@@ -60,25 +60,35 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import LoginComp from "../components/account/Login.vue";
-import Register from "../components/account/Register.vue";
-import Feed from "../components/account/Feed.vue";
+	import { mapGetters } from 'vuex';
+	import LoginComp from "../components/account/Login.vue";
+	import Register from "../components/account/Register.vue";
+	import Feed from "../components/account/Feed.vue";
 
-export default {
-	name: "Home",
-	data() {
-		return {
-			showModal: false,
-		}
-	},
-	components: {
-		LoginComp,
-		Register,
-		Feed,
-	},
-	computed: {
-		...mapState(['accessToken'])
-	}
-};
+	export default {
+		name: "Home",
+		data() {
+			return {
+				showModal: false,
+				accessToken: null,
+			}
+		},
+		components: {
+			LoginComp,
+			Register,
+			Feed,
+		},
+		created() {
+			this.accessToken = this.stateAccessToken
+		},
+		updated() {
+			this.accessToken = this.stateAccessToken
+			console.log(this.stateAccessToken)
+		},
+		computed: {
+			...mapGetters({
+				stateAccessToken: 'accessToken',
+			})
+		},
+	};
 </script>

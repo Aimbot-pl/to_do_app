@@ -34,7 +34,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.cleanErrors();
     }
   },
-  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapState)(["userId"])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)(["loginErrors", "userErrors"])),
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)(["loginErrors", "userErrors"])),
   methods: _objectSpread(_objectSpread(_objectSpread({}, _helpers_TogglePassword__WEBPACK_IMPORTED_MODULE_0__.default), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)({
     login: "login",
     cleanErrors: "doCleanLoginErrors"
@@ -49,11 +49,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           _this.$router.replace({
             name: "user",
             params: {
-              id: _this.$store.state.account.userId
+              user: _this.$store.state.account.user.nick
             }
           });
         }
-      }, 2000);
+      }, 5000);
       this.login(credentials);
     }
   })

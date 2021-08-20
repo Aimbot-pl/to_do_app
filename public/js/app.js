@@ -21227,14 +21227,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   created: function created() {
     this.fetchAuth();
   },
+  beforeMount: function beforeMount() {
+    this.user = this.userData;
+  },
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)({
-    accessToken: 'accessToken',
-    userId: 'userId'
+    accessToken: "accessToken",
+    userData: "user"
   })),
-  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['logout', 'fetchAuth'])), {}, {
+  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(["logout", "fetchAuth"])), {}, {
     logFetchAccessToken: function logFetchAccessToken() {
       this.fetchAuth();
       return this.accessToken;
+    },
+    logUser: function logUser() {
+      console.log(this.user);
     }
   })
 });
@@ -21255,10 +21261,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
 var _hoisted_1 = {
-  "class": "navbar navbar-expand-md navbar-light bg-light"
+  key: 0,
+  "class": "\n\t\t\tnavbar navbar-dark bg-dark navbar-expand-md navbar-light\n\t\t\tbg-light\n\t\t\tborder-bottom border-2\n\t\t\trounded-2 mb-3\n\t\t"
 };
 var _hoisted_2 = {
-  "class": "container-fluid"
+  "class": "container-fluid px-2"
 };
 
 var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Home");
@@ -21278,54 +21285,39 @@ var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 );
 
 var _hoisted_5 = {
-  "class": "collapse navbar-collapse",
+  "class": "collapse navbar-collapse ms-end justify-content-end",
   id: "navbarNav"
 };
 var _hoisted_6 = {
   "class": "navbar-nav"
 };
 var _hoisted_7 = {
-  "class": "nav-item"
-};
-
-var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Tasks");
-
-var _hoisted_9 = {
-  "class": "nav-item"
-};
-
-var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Test");
-
-var _hoisted_11 = {
-  "class": "nav-item"
-};
-
-var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Test 2");
-
-var _hoisted_13 = {
   key: 0,
   "class": "nav-item dropdown"
 };
-
-var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("a", {
+var _hoisted_8 = {
   "class": "nav-link dropdown-toggle",
   href: "#",
   id: "navbarDropdown",
   role: "button",
   "data-bs-toggle": "dropdown",
   "aria-expanded": "false"
-}, " Profile ", -1
+};
+
+var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+  "class": "bi bi-person-circle"
+}, null, -1
 /* HOISTED */
 );
 
-var _hoisted_15 = {
-  "class": "dropdown-menu dropdown-menu-right",
+var _hoisted_10 = {
+  "class": "dropdown-menu dropdown-menu-md-end",
   "aria-labelledby": "navbarDropdown"
 };
 
-var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Settings");
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Preferences");
 
-var _hoisted_17 = {
+var _hoisted_12 = {
   "class": "container"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -21333,10 +21325,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   var _component_router_view = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-view");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("nav", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_ctx.user ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("nav", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
     "class": "navbar-brand",
     to: {
-      name: 'home'
+      path: '/'
     }
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
@@ -21345,66 +21337,33 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
     /* STABLE */
 
-  }), _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("ul", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("li", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
-    "class": "nav-link",
-    to: {
-      name: 'tasks'
-    }
-  }, {
-    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [_hoisted_8];
-    }),
-    _: 1
-    /* STABLE */
-
-  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("li", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
-    "class": "nav-link",
-    to: {
-      name: 'test'
-    }
-  }, {
-    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [_hoisted_10];
-    }),
-    _: 1
-    /* STABLE */
-
-  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("li", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
-    "class": "nav-link",
-    to: {
-      name: 'testSecond'
-    }
-  }, {
-    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [_hoisted_12];
-    }),
-    _: 1
-    /* STABLE */
-
-  })]), _ctx.userId ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("li", _hoisted_13, [_hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("ul", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("li", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
+  }), _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("ul", _hoisted_6, [_ctx.user ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("li", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("a", _hoisted_8, [_hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.user.nick), 1
+  /* TEXT */
+  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("ul", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("li", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
     "class": "dropdown-item",
     to: {
       name: 'user',
       params: {
-        id: _ctx.userId
+        user: _ctx.user.nick
       }
-    }
+    },
+    onClick: $options.logUser
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [_hoisted_16];
+      return [_hoisted_11];
     }),
     _: 1
     /* STABLE */
 
   }, 8
   /* PROPS */
-  , ["to"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("li", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("a", {
+  , ["to", "onClick"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("li", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("a", {
     onClick: _cache[1] || (_cache[1] = function () {
       return _ctx.logout && _ctx.logout.apply(_ctx, arguments);
     }),
     "class": "dropdown-item",
     href: "#"
-  }, "Logout")])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_view)])], 64
+  }, "Logout")])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_view)])], 64
   /* STABLE_FRAGMENT */
   );
 }
@@ -21494,52 +21453,35 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   state: function state() {
     return {
-      registerngIn: false,
-      registerError: null,
       accessToken: null,
       loggingIn: false,
       loginError: null,
-      userId: null,
-      userData: null,
+      user: null,
       userFetching: false,
-      userError: undefined
+      userError: undefined,
+      showPage: true,
+      changingPassword: false,
+      changePasswordError: null
     };
   },
   getters: {
-    registerErrors: function registerErrors(state) {
-      return state.registerError;
-    },
     loginErrors: function loginErrors(state) {
       return state.loginError;
     },
     userId: function userId(state) {
-      return state.userId;
+      return state.user.id;
     },
     accessToken: function accessToken(state) {
       return state.accessToken;
     },
-    userData: function userData(state) {
-      return state.userData;
+    user: function user(state) {
+      return state.user;
     },
     userErrors: function userErrors(state) {
       return state.userError;
     }
   },
   mutations: {
-    registerStart: function registerStart(state) {
-      return state.registeringIn = true;
-    },
-    registerStop: function registerStop(state, errorMessage) {
-      state.registerngIn = false;
-
-      if (typeof errorMessage === 'string' || errorMessage instanceof String) {
-        state.registerError = errorMessage;
-      } else {
-        state.registerError = _objectSpread(_objectSpread({}, errorMessage.errors), {}, {
-          message: errorMessage.message
-        });
-      }
-    },
     loginStart: function loginStart(state) {
       return state.loggingIn = true;
     },
@@ -21550,12 +21492,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     logout: function logout(state) {
       sessionStorage.clear();
       state.accessToken = null;
-      state.userId = null;
-      state.userData = null;
+      state.user = null;
     },
     updateAuth: function updateAuth(state, payload) {
       state.accessToken = payload.accessToken;
-      state.userId = payload.userId;
+      state.user = payload.user;
     },
     fetchingStart: function fetchingStart(state) {
       return state.userFetching = true;
@@ -21567,11 +21508,190 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     cleanLoginErrors: function cleanLoginErrors(state) {
       state.loginError = null;
     },
-    fetchData: function fetchData(state, userData) {
-      if (userData) {
-        state.userData = _objectSpread({}, userData.data);
+    fetchData: function fetchData(state, user) {
+      if (user) {
+        sessionStorage.setItem('user', JSON.stringify(user.data));
+        state.user = _objectSpread({}, user.data);
       } else {
-        state.userData = userData;
+        state.user = user;
+      }
+    }
+  },
+  actions: {
+    login: function login(_ref, credentials) {
+      var commit = _ref.commit,
+          state = _ref.state;
+      commit('loginStart');
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/login", {
+        email: credentials.username,
+        password: credentials.password
+      }).then(function (res) {
+        sessionStorage.setItem('accessToken', res.data.token);
+        sessionStorage.setItem('user', JSON.stringify(res.data.user));
+        commit('loginStop', null);
+        commit('updateAuth', {
+          accessToken: sessionStorage.getItem('accessToken'),
+          user: JSON.parse(sessionStorage.getItem('user'))
+        });
+        return state.userId;
+      })["catch"](function (err) {
+        commit('loginStop', err.response.data.message);
+        commit('updateAuth', {
+          accessToken: null,
+          user: null
+        });
+      });
+    },
+    doCleanLoginErrors: function doCleanLoginErrors(_ref2) {
+      var commit = _ref2.commit;
+      commit('cleanLoginErrors');
+    },
+    logout: function logout(_ref3) {
+      var commit = _ref3.commit;
+      commit('logout');
+      setTimeout(function () {
+        _router__WEBPACK_IMPORTED_MODULE_1__.default.replace({
+          name: 'home'
+        });
+      }, 1000);
+    },
+    fetchAuth: function fetchAuth(_ref4) {
+      var commit = _ref4.commit;
+      console.log('updating started');
+      commit('updateAuth', {
+        accessToken: sessionStorage.getItem('accessToken'),
+        user: JSON.parse(sessionStorage.getItem('user'))
+      });
+      console.log('updating finished');
+    },
+    fetchUserData: function fetchUserData(_ref5) {
+      var state = _ref5.state,
+          commit = _ref5.commit;
+      commit('fetchingStart');
+      console.log('fetching start');
+
+      if (state.user) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default()({
+          method: 'get',
+          url: "/api/user/".concat(state.user.id),
+          headers: {
+            Accept: 'application/json',
+            Authorization: "Bearer ".concat(state.accessToken)
+          }
+        }).then(function (res) {
+          console.log(res.data);
+          commit('fetchingStop', null);
+          commit('fetchData', res.data);
+        })["catch"](function (err) {
+          commit('fetchingStop', err.response.data);
+          commit('fetchData', null);
+
+          if (state.userError.message === "Unauthenticated.") {
+            _router__WEBPACK_IMPORTED_MODULE_1__.default.replace({
+              path: '/login'
+            });
+          }
+        })["finally"](function () {
+          return console.log('fetching finished');
+        });
+      } else {
+        commit('logout');
+        _router__WEBPACK_IMPORTED_MODULE_1__.default.replace({
+          name: 'login'
+        });
+      }
+    },
+    saveChanges: function saveChanges(_ref6, submittedData) {
+      var state = _ref6.state,
+          commit = _ref6.commit,
+          dispatch = _ref6.dispatch;
+      return dispatch('fetchUserData').then(function () {
+        console.log('fetched');
+        console.log(state.user.id);
+
+        if (JSON.stringify(state.userError) === JSON.stringify(submittedData)) {
+          state.userError = {
+            message: 'Data already exists '
+          };
+        } else if (!submittedData) {
+          state.userError = {
+            message: 'Given data is empty'
+          };
+        } else {
+          commit('fetchingStart');
+          axios__WEBPACK_IMPORTED_MODULE_0___default().get('/sanctum/csrf-cookie').then(function () {
+            axios__WEBPACK_IMPORTED_MODULE_0___default()({
+              method: 'put',
+              url: "/api/user/".concat(state.user.id),
+              data: _objectSpread({}, submittedData),
+              headers: {
+                Accept: 'application/json',
+                Authorization: "Bearer ".concat(state.accessToken)
+              }
+            }).then(function (res) {
+              commit('fetchingStop', null);
+              commit('fetchData', res.data);
+            })["catch"](function (err) {
+              commit('fetchingStop', err);
+              commit('fetchData', null);
+            });
+          });
+        }
+      });
+    },
+    changePassword: function changePassword(_ref7, credentials) {
+      var commit = _ref7.commit;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/components/modules/register.js":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/modules/register.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  state: function state() {
+    return {
+      registeringIn: false,
+      registerError: null
+    };
+  },
+  getters: {
+    registerErrors: function registerErrors(state) {
+      return state.registerError;
+    }
+  },
+  mutations: {
+    registerStart: function registerStart(state) {
+      return state.registeringIn = true;
+    },
+    registerStop: function registerStop(state, errorMessage) {
+      state.registeringIn = false;
+
+      if (typeof errorMessage === 'string' || errorMessage instanceof String) {
+        state.registerError = errorMessage;
+      } else {
+        state.registerError = _objectSpread(_objectSpread({}, errorMessage.errors), {}, {
+          message: errorMessage.message
+        });
       }
     }
   },
@@ -21579,7 +21699,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     signUp: function signUp(_ref, credentials) {
       var commit = _ref.commit;
       commit('registerStart');
-      console.log(credentials);
       axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/register", {
         nick: credentials.nick,
         first_name: credentials.first_name,
@@ -21593,235 +21712,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       })["catch"](function (err) {
         commit('registerStop', err.response.data);
       });
-    },
-    login: function login(_ref2, credentials) {
-      var commit = _ref2.commit,
-          state = _ref2.state;
-      commit('loginStart');
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/login", {
-        email: credentials.username,
-        password: credentials.password
-      }).then(function (res) {
-        sessionStorage.setItem('accessToken', res.data.token);
-        sessionStorage.setItem('userId', res.data.id);
-        commit('loginStop', null);
-        commit('updateAuth', {
-          accessToken: sessionStorage.getItem('accessToken'),
-          userId: sessionStorage.getItem('userId')
-        });
-        return state.userId;
-      })["catch"](function (err) {
-        commit('loginStop', err.response.data.message);
-        commit('updateAuth', {
-          accessToken: null,
-          userId: null
-        });
-      });
-    },
-    doCleanLoginErrors: function doCleanLoginErrors(_ref3) {
-      var commit = _ref3.commit;
-      commit('cleanLoginErrors');
-    },
-    logout: function logout(_ref4) {
-      var commit = _ref4.commit;
-      commit('logout');
-      _router__WEBPACK_IMPORTED_MODULE_1__.default.replace({
-        name: 'home'
-      });
-    },
-    fetchAuth: function fetchAuth(_ref5) {
-      var commit = _ref5.commit;
-      commit('updateAuth', {
-        accessToken: sessionStorage.getItem('accessToken'),
-        userId: sessionStorage.getItem('userId')
-      });
-    },
-    fetchUserData: function fetchUserData(_ref6) {
-      var state = _ref6.state,
-          commit = _ref6.commit;
-      commit('fetchingStart');
-      console.log('fetchingStart');
-      axios__WEBPACK_IMPORTED_MODULE_0___default()({
-        method: 'get',
-        url: "/api/user/".concat(state.userId),
-        headers: {
-          Accept: 'application/json',
-          Authorization: "Bearer ".concat(state.accessToken)
-        }
-      }).then(function (res) {
-        commit('fetchingStop', null);
-        commit('fetchData', res.data);
-      })["catch"](function (err) {
-        console.log(err.response);
-        commit('fetchingStop', err.response.data);
-        commit('fetchData', null);
-
-        if (state.userError.message === "Unauthenticated.") {
-          _router__WEBPACK_IMPORTED_MODULE_1__.default.replace({
-            path: '/login'
-          });
-        }
-      });
-    },
-    saveChanges: function saveChanges(_ref7, submittedData) {
-      var state = _ref7.state,
-          commit = _ref7.commit,
-          dispatch = _ref7.dispatch;
-      return dispatch('fetchUserData').then(function () {
-        console.log(JSON.stringify(state.userData) === JSON.stringify(submittedData));
-
-        if (JSON.stringify(state.userData) === JSON.stringify(submittedData)) {
-          state.userError = {
-            message: 'Data already exists '
-          };
-        } else if (!submittedData) {
-          state.userError = {
-            message: 'Given data is empty'
-          };
-        } else {
-          commit('fetchingStart');
-          axios__WEBPACK_IMPORTED_MODULE_0___default().get('/sanctum/csrf-cookie').then(function () {
-            axios__WEBPACK_IMPORTED_MODULE_0___default()({
-              method: 'put',
-              url: "/api/user/".concat(state.userId),
-              data: _objectSpread({}, submittedData),
-              headers: {
-                Accept: 'application/json',
-                Authorization: "Bearer ".concat(state.accessToken)
-              }
-            }).then(function (res) {
-              console.log(res);
-              commit('fetchingStop', null);
-              commit('fetchData', res.data);
-            })["catch"](function (err) {
-              console.log(err.response);
-              commit('fetchingStop', err);
-              commit('fetchData', null);
-            });
-          });
-        }
-      });
-    },
-    togglePassword: function togglePassword(input, button) {
-      if (input.type === "password") {
-        input.type = 'text';
-        button.classList.value = 'btn btn-success';
-        button.textContent = 'Hide';
-      } else {
-        input.type = 'password';
-        button.classList.value = 'btn btn-outline-success';
-        button.textContent = 'Show';
-      }
     }
   }
-});
-
-/***/ }),
-
-/***/ "./resources/js/components/modules/products.js":
-/*!*****************************************************!*\
-  !*** ./resources/js/components/modules/products.js ***!
-  \*****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _shop__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shop */ "./resources/js/components/shop.js");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  state: function state() {
-    return {
-      products: _shop__WEBPACK_IMPORTED_MODULE_0__.default._products,
-      cart: []
-    };
-  },
-  getters: {
-    cartProducts: function cartProducts(state) {
-      return state.cart.map(function (cartItem) {
-        var product = state.products.find(function (product) {
-          return product.id === cartItem.id;
-        });
-        return {
-          id: product.id,
-          title: product.title,
-          price: product.price,
-          quantity: cartItem.quantity
-        };
-      });
-    },
-    total: function total(state, getters) {
-      return getters.cartProducts.reduce(function (total, item) {
-        return total + item.quantity * item.price;
-      }, 0).toFixed(2);
-    }
-  },
-  actions: {
-    addProductToCart: function addProductToCart(context, product) {
-      if (product.inventory > 0) {
-        var cartItem = context.state.cart.find(function (item) {
-          return item.id === product.id;
-        });
-
-        if (!cartItem) {
-          context.commit('pushProductToCart', product.id);
-        } else {
-          context.commit('incrementItemQuantity', cartItem);
-        }
-
-        context.commit('decrementProductQuantity', product);
-      }
-    }
-  },
-  mutations: {
-    pushProductToCart: function pushProductToCart(state, productId) {
-      state.cart.push({
-        id: productId,
-        quantity: 1
-      });
-    },
-    incrementItemQuantity: function incrementItemQuantity(state, cartItem) {
-      cartItem.quantity++;
-    },
-    decrementProductQuantity: function decrementProductQuantity(state, product) {
-      product.inventory--;
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./resources/js/components/shop.js":
-/*!*****************************************!*\
-  !*** ./resources/js/components/shop.js ***!
-  \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-var _products = [{
-  'id': 1,
-  'title': 'iPad 4 Mini',
-  'price': 500.01,
-  'inventory': 2
-}, {
-  'id': 2,
-  'title': 'H&M T-Shirt White',
-  'price': 10.99,
-  'inventory': 10
-}, {
-  'id': 3,
-  'title': 'Charli XCX - Sucker CD',
-  'price': 19.99,
-  'inventory': 5
-}];
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  _products: _products
 });
 
 /***/ }),
@@ -21874,15 +21766,16 @@ var routes = [{
     return __webpack_require__.e(/*! import() */ "resources_js_views_Register_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Register.vue */ "./resources/js/views/Register.vue"));
   }
 }, {
-  path: '/users/:id',
+  path: '/user/:user',
   name: 'user',
   component: function component() {
     return __webpack_require__.e(/*! import() */ "resources_js_views_User_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./views/User.vue */ "./resources/js/views/User.vue"));
   },
   beforeEnter: function beforeEnter(to, from, next) {
+    _store__WEBPACK_IMPORTED_MODULE_0__.default.dispatch('fetchUserData');
     _store__WEBPACK_IMPORTED_MODULE_0__.default.dispatch('fetchAuth');
 
-    if (_store__WEBPACK_IMPORTED_MODULE_0__.default.state.account.accessToken && _store__WEBPACK_IMPORTED_MODULE_0__.default.state.account.userId && to.params.id === _store__WEBPACK_IMPORTED_MODULE_0__.default.state.account.userId) {
+    if (_store__WEBPACK_IMPORTED_MODULE_0__.default.state.account.accessToken && _store__WEBPACK_IMPORTED_MODULE_0__.default.state.account.user && to.params.user === _store__WEBPACK_IMPORTED_MODULE_0__.default.state.account.user.nick) {
       next();
     } else {
       next({
@@ -21894,23 +21787,36 @@ var routes = [{
     }
   },
   children: [{
-    path: '/users/:id/settings',
-    name: 'Settings',
+    path: '',
+    name: 'profile',
     component: function component() {
-      return __webpack_require__.e(/*! import() */ "resources_js_views_Settings_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Settings.vue */ "./resources/js/views/Settings.vue"));
+      return __webpack_require__.e(/*! import() */ "resources_js_components_account_Profile_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/account/Profile.vue */ "./resources/js/components/account/Profile.vue"));
     }
+  }, {
+    path: 'preferences',
+    name: 'settings',
+    component: function component() {
+      return __webpack_require__.e(/*! import() */ "resources_js_components_account_Preferences_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/account/Preferences.vue */ "./resources/js/components/account/Preferences.vue"));
+    },
+    children: [{
+      path: 'change-data',
+      name: 'changeData',
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ "resources_js_components_account_ChangeData_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/account/ChangeData.vue */ "./resources/js/components/account/ChangeData.vue"));
+      }
+    }, {
+      path: 'change-password',
+      name: 'changePassword',
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ "resources_js_components_account_ChangePassword_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/account/ChangePassword.vue */ "./resources/js/components/account/ChangePassword.vue"));
+      }
+    }]
   }]
 }, {
   path: '/forgot-password',
   name: 'forgotPassword',
   component: {
     template: '<div>link</div>'
-  }
-}, {
-  path: '/test',
-  name: 'test',
-  component: function component() {
-    return __webpack_require__.e(/*! import() */ "resources_js_components_Test_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/Test.vue */ "./resources/js/components/Test.vue"));
   }
 }, {
   path: '/test-second',
@@ -21940,14 +21846,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
 /* harmony import */ var _components_modules_account__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/modules/account */ "./resources/js/components/modules/account.js");
-/* harmony import */ var _components_modules_products__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/modules/products */ "./resources/js/components/modules/products.js");
+/* harmony import */ var _components_modules_register__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/modules/register */ "./resources/js/components/modules/register.js");
 
 
 
 var store = (0,vuex__WEBPACK_IMPORTED_MODULE_2__.createStore)({
   modules: {
     account: _components_modules_account__WEBPACK_IMPORTED_MODULE_0__.default,
-    products: _components_modules_products__WEBPACK_IMPORTED_MODULE_1__.default
+    register: _components_modules_register__WEBPACK_IMPORTED_MODULE_1__.default
   }
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (store);
@@ -49660,7 +49566,7 @@ var index = {
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_views_Home_vue":1,"resources_js_views_Tasks_vue":1,"resources_js_views_Login_vue":1,"resources_js_views_Register_vue":1,"resources_js_views_User_vue":1,"resources_js_views_Settings_vue":1,"resources_js_components_Test_vue":1,"resources_js_components_TestSecond_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_views_Home_vue":1,"resources_js_views_Tasks_vue":1,"resources_js_views_Login_vue":1,"resources_js_views_Register_vue":1,"resources_js_views_User_vue":1,"resources_js_components_account_Profile_vue":1,"resources_js_components_account_Preferences_vue":1,"resources_js_components_account_ChangeData_vue":1,"resources_js_components_account_ChangePassword_vue":1,"resources_js_components_TestSecond_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

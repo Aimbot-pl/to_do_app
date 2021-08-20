@@ -36,16 +36,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   mounted: function mounted() {
-    if (this.userData) {
-      this.localUserData = _objectSpread({}, this.userData);
+    if (this.user) {
+      this.localUserData = _objectSpread({}, this.user);
     } else if (this.errors) {
       this.localErrors = this.errors;
+    }
+
+    if (!this.user) {
+      this.$router.replace({
+        name: 'user',
+        query: {
+          redirect: $route.fullPath
+        }
+      });
     }
   },
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)({
     userId: 'userId',
     errors: 'userErrors',
-    userData: 'userData'
+    user: 'user'
   })),
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['fetchUserData', 'saveChanges'])), {}, {
     closeModal: function closeModal() {

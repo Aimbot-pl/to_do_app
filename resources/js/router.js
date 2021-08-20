@@ -30,12 +30,13 @@ const routes = [
         component: () => import('./views/Register.vue'),
     },
     {
-        path: '/users/:id',
+        path: '/user/:user',
         name: 'user',
         component: () => import('./views/User.vue'),
         beforeEnter: (to, from, next) => {
+            store.dispatch('fetchUserData')
             store.dispatch('fetchAuth')
-            if (store.state.account.accessToken && store.state.account.userId && to.params.id === store.state.account.userId) {
+            if (store.state.account.accessToken && store.state.account.user && to.params.user === store.state.account.user.nick) {
                 next()
             } else {
                 next({
@@ -46,27 +47,39 @@ const routes = [
         },
         children: [
             {
-                path: '/users/:id/settings',
-                name: 'Settings',
-                component: () => import('./views/Settings.vue'),
+                path: '',
+                name: 'profile',
+                component: () => import('./components/account/Profile.vue')
             },
-        ] 
+            {
+                path: 'preferences',
+                name: 'settings',
+                component: () => import('./components/account/Preferences.vue'),
+                children: [
+                    {
+                        path: 'change-data',
+                        name: 'changeData',
+                        component: () => import('./components/account/ChangeData.vue'),
+                    },
+                    {
+                        path: 'change-password',
+                        name: 'changePassword',
+                        component: () => import('./components/account/ChangePassword.vue'),
+                    },
+                ]
+            },
+        ]
     },
 
     {
         path: '/forgot-password',
-            name: 'forgotPassword',
-                component: { template: '<div>link</div>' },
+        name: 'forgotPassword',
+        component: { template: '<div>link</div>' },
     },
     {
-        path: '/test',
-            name: 'test',
-                component: () => import('./components/Test.vue'),
-        },
-    {
         path: '/test-second',
-            name: 'testSecond',
-                component: () => import('./components/TestSecond.vue'),
+        name: 'testSecond',
+        component: () => import('./components/TestSecond.vue'),
     },
 ];
 

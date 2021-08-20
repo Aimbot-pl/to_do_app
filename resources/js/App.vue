@@ -1,7 +1,15 @@
 <template>
-	<nav class="navbar navbar-expand-md navbar-light bg-light">
-		<div class="container-fluid">
-			<router-link class="navbar-brand" :to="{ name: 'home' }"
+	<nav
+		v-if="user"
+		class="
+			navbar navbar-dark bg-dark navbar-expand-md navbar-light
+			bg-light
+			border-bottom border-2
+			rounded-2 mb-3
+		"
+	>
+		<div class="container-fluid px-2">
+			<router-link class="navbar-brand" :to="{ path: '/' }"
 				>Home</router-link
 			>
 			<button
@@ -15,26 +23,12 @@
 			>
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<div class="collapse navbar-collapse" id="navbarNav">
+			<div
+				class="collapse navbar-collapse ms-end justify-content-end"
+				id="navbarNav"
+			>
 				<ul class="navbar-nav">
-					<li class="nav-item">
-						<router-link class="nav-link" :to="{ name: 'tasks' }"
-							>Tasks</router-link
-						>
-					</li>
-					<li class="nav-item">
-						<router-link class="nav-link" :to="{ name: 'test' }"
-							>Test</router-link
-						>
-					</li>
-					<li class="nav-item">
-						<router-link
-							class="nav-link"
-							:to="{ name: 'testSecond' }"
-							>Test 2</router-link
-						>
-					</li>
-					<li v-if="userId" class="nav-item dropdown">
+					<li v-if="user" class="nav-item dropdown">
 						<a
 							class="nav-link dropdown-toggle"
 							href="#"
@@ -43,17 +37,22 @@
 							data-bs-toggle="dropdown"
 							aria-expanded="false"
 						>
-							Profile
+							<i class="bi bi-person-circle"></i>
+							{{ user.nick }}
 						</a>
 						<ul
-							class="dropdown-menu dropdown-menu-right"
+							class="dropdown-menu dropdown-menu-md-end"
 							aria-labelledby="navbarDropdown"
 						>
 							<li>
 								<router-link
 									class="dropdown-item"
-									:to="{name: 'user', params: {id: userId}}"
-									>Settings</router-link
+									:to="{
+										name: 'user',
+										params: { user: user.nick },
+									}"
+									@click="logUser"
+									>Preferences</router-link
 								>
 							</li>
 							<li>
@@ -80,22 +79,25 @@ import { mapActions, mapGetters, mapState } from "vuex";
 export default {
 	name: "App",
 	created() {
-		this.fetchAuth()
+		this.fetchAuth();
+	},
+	beforeMount() {
+		this.user = this.userData
 	},
 	computed: {
 		...mapGetters({
-			accessToken: 'accessToken',
-			userId: 'userId'
+			accessToken: "accessToken",
+			userData: "user",
 		}),
 	},
 	methods: {
-		...mapActions([
-			'logout',
-			'fetchAuth',
-		]),
+		...mapActions(["logout", "fetchAuth"]),
 		logFetchAccessToken() {
-			this.fetchAuth()
-			return this.accessToken
+			this.fetchAuth();
+			return this.accessToken;
+		},
+		logUser() {
+			console.log(this.user)
 		}
 	},
 };

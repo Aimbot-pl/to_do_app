@@ -1,35 +1,60 @@
 <template>
-	User
-    <ul class="navbar-nav">
-        <li class="navbar-item">
-            <router-link :to="{name: 'Settings'}">
-                Settings
-            </router-link>
-        </li>
-    </ul>
-    <router-view></router-view>
+	<div v-if="user" class="col-lg-10 m-auto">
+		<div class="row my-3 p-3">
+			<div class="col-2">
+				<i class="bi-person-square display-1"></i>
+			</div>
+			<div class="col">
+				<h1>{{ user.first_name }} {{ user.last_name }}</h1>
+			</div>
+		</div>
+
+		<nav class="navbar navbar-expand mb-3">
+			<ul class="navbar-nav border border-2 rounded-2 col-12 px-3 py-1">
+				<li class="nav-item nav-path">
+					<router-link
+						class="nav-link"
+						:to="{
+							name: 'profile',
+							params: { user: user.nick },
+						}"
+					>
+						Profile
+					</router-link>
+				</li>
+
+				<li class="nav-item nav-path">
+					<router-link class="nav-link" :to="{ name: 'settings' }">
+						Preferences
+					</router-link>
+				</li>
+			</ul>
+		</nav>
+	</div>
+	<router-view>
+		
+	</router-view>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
 	data() {
 		return {
-
 			user: null,
 		};
 	},
-
 	created() {
-		this.fetchDatas()
+		this.fetchDatas();
 	},
-    mounted() {
-        console.log(this.$store.state.account)
-    },
+	mounted() {
+		this.user = this.userData;
+		document.title = this.user.nick;
+	},
 	computed: {
 		...mapGetters({
 			errors: "userErrors",
-			userData: "userData",
+			userData: "user",
 		}),
 	},
 	methods: {
@@ -39,3 +64,17 @@ export default {
 	},
 };
 </script>
+
+<style>
+li.nav-path::before {
+	content: "/";
+}
+
+li.nav-path:first-child::before {
+	content: "";
+}
+
+li.nav-path > a {
+	display: inline flow-root list-item;
+}
+</style>

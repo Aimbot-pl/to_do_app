@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import togglePassword from "../../helpers/TogglePassword";
 export default {
 	name: "LoginComp",
@@ -60,7 +60,6 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(["userId"]),
 		...mapGetters(["loginErrors", "userErrors"]),
 	},
 	methods: {
@@ -76,10 +75,10 @@ export default {
 				} else {
 					this.$router.replace({
 						name: "user",
-						params: { id: this.$store.state.account.userId },
+						params: { user: this.$store.state.account.user.nick },
 					});
 				}
-			}, 2000);
+			}, 5000);
 			this.login(credentials);
 		},
 	},

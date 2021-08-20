@@ -62,7 +62,7 @@ class UserController extends Controller
             return response(['message' => 'Bad creds'], 422);
         }
         $response = [
-            'id' => $user->id,
+            'user' => $user,
             'token' => $user->createToken('myapptoken')->plainTextToken
         ];
         return response($response, 201);

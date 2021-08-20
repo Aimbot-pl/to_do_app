@@ -3,47 +3,35 @@ import router from '../../router'
 export default {
     state() {
         return {
-            registerngIn: false,
-            registerError: null,
             accessToken: null,
             loggingIn: false,
             loginError: null,
-            userId: null,
-            userData: null,
+            user: null,
             userFetching: false,
             userError: undefined,
+            showPage: true,
+            changingPassword: false,
+            changePasswordError: null,
         }
     },
     getters: {
-        registerErrors(state) {
-            return state.registerError
-        },
         loginErrors(state) {
             return state.loginError
         },
         userId(state) {
-            return state.userId
+            return state.user.id
         },
         accessToken(state) {
             return state.accessToken
         },
-        userData(state) {
-            return state.userData
+        user(state) {
+            return state.user
         },
         userErrors(state) {
             return state.userError
-        }
+        },
     },
     mutations: {
-        registerStart: state => state.registeringIn = true,
-        registerStop(state, errorMessage) {
-            state.registerngIn = false
-            if (typeof errorMessage === 'string' || errorMessage instanceof String) {
-                state.registerError = errorMessage
-            } else {
-                state.registerError = {...errorMessage.errors, message: errorMessage.message}
-            }
-        },
         loginStart: state => state.loggingIn = true,
         loginStop(state, errorMessage) {
             state.loggingIn = false
@@ -52,12 +40,11 @@ export default {
         logout(state) {
             sessionStorage.clear()
             state.accessToken = null
-            state.userId = null
-            state.userData = null
+            state.user = null
         },
         updateAuth(state, payload) {
             state.accessToken = payload.accessToken
-            state.userId = payload.userId
+            state.user = payload.user
         },
         fetchingStart: state => state.userFetching = true,
         fetchingStop(state, error) {
@@ -67,34 +54,16 @@ export default {
         cleanLoginErrors(state) {
             state.loginError = null
         },
-        fetchData(state, userData) {
-            if (userData) {
-                state.userData = { ...userData.data }
+        fetchData(state, user) {
+            if (user) {
+                sessionStorage.setItem('user', JSON.stringify(user.data))
+                state.user = { ...user.data }
             } else {
-                state.userData = userData
+                state.user = user
             }
-        }
+        },
     },
     actions: {
-        signUp({commit}, credentials) {
-            commit('registerStart')
-            console.log(credentials)
-            axios
-                .post("/api/register", {
-                    nick: credentials.nick,
-                    first_name: credentials.first_name,
-                    last_name: credentials.last_name,
-                    email: credentials.email,
-                    password: credentials.password,
-                    password_confirmation: credentials.password_confirmation,
-                    gender: credentials.gender,
-                }
-            ).then((res) => {
-                commit('registerStop', res.data.message)
-            }).catch((err) => {
-                commit('registerStop', err.response.data)
-            })
-        },
         login({ commit, state }, credentials) {
             commit('loginStart')
             axios.post("/api/login", {
@@ -103,11 +72,11 @@ export default {
             })
                 .then((res) => {
                     sessionStorage.setItem('accessToken', res.data.token);
-                    sessionStorage.setItem('userId', res.data.id)
+                    sessionStorage.setItem('user', JSON.stringify(res.data.user))
                     commit('loginStop', null)
                     commit('updateAuth', {
                         accessToken: sessionStorage.getItem('accessToken'),
-                        userId: sessionStorage.getItem('userId')
+                        user: JSON.parse(sessionStorage.getItem('user'))
                     })
                     return state.userId
                 })
@@ -115,7 +84,7 @@ export default {
                     commit('loginStop', err.response.data.message)
                     commit('updateAuth', {
                         accessToken: null,
-                        userId: null
+                        user: null
                     })
                 });
         },
@@ -124,42 +93,54 @@ export default {
         },
         logout({ commit }) {
             commit('logout')
-            router.replace({ name: 'home' })
+            setTimeout(() => {
+
+                router.replace({ name: 'home' })
+            }, 1000)
         },
         fetchAuth({ commit }) {
+            console.log('updating started')
             commit('updateAuth', {
                 accessToken: sessionStorage.getItem('accessToken'),
-                userId: sessionStorage.getItem('userId')
+                user: JSON.parse(sessionStorage.getItem('user'))
             })
+            console.log('updating finished')
         },
-        fetchUserData({ state, commit }) {
+        fetchUserData({ state, commit}) {
             commit('fetchingStart')
-            console.log('fetchingStart')
-            axios({
-                method: 'get',
-                url: `/api/user/${state.userId}`,
-                headers: {
-                    Accept: 'application/json',
-                    Authorization: `Bearer ${state.accessToken}`
-                }
-            })
+            console.log('fetching start')
+            if (state.user) {
+
+                axios({
+                    method: 'get',
+                    url: `/api/user/${state.user.id}`,
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${state.accessToken}`
+                    }
+                })
                 .then((res) => {
+                    console.log(res.data)
                     commit('fetchingStop', null)
                     commit('fetchData', res.data)
                 })
                 .catch((err) => {
-                    console.log(err.response)
                     commit('fetchingStop', err.response.data)
                     commit('fetchData', null)
                     if (state.userError.message === "Unauthenticated.") {
                         router.replace({ path: '/login' })
                     }
-                })
-        },
-        saveChanges({ state, commit, dispatch }, submittedData) {
-            return dispatch('fetchUserData').then(() => {
-                console.log(JSON.stringify(state.userData) === JSON.stringify(submittedData))
-                if (JSON.stringify(state.userData) === JSON.stringify(submittedData)) {
+                }).finally(() => console.log('fetching finished'))
+            } else {
+                commit('logout') 
+                router.replace({name: 'login'})
+            }
+            },
+            saveChanges({ state, commit, dispatch }, submittedData) {
+                return dispatch('fetchUserData').then(() => {
+                    console.log('fetched')
+                    console.log(state.user.id)
+                if (JSON.stringify(state.userError) === JSON.stringify(submittedData)) {
                     state.userError = { message: 'Data already exists ' }
                 } else if (!submittedData) {
                     state.userError = { message: 'Given data is empty' }
@@ -168,7 +149,7 @@ export default {
                     axios.get('/sanctum/csrf-cookie').then(() => {
                         axios({
                             method: 'put',
-                            url: `/api/user/${state.userId}`,
+                            url: `/api/user/${state.user.id}`,
                             data: {
                                 ...submittedData
                             },
@@ -178,12 +159,10 @@ export default {
                             }
                         })
                             .then((res) => {
-                                console.log(res)
                                 commit('fetchingStop', null)
                                 commit('fetchData', res.data)
                             })
                             .catch((err) => {
-                                console.log(err.response)
                                 commit('fetchingStop', err)
                                 commit('fetchData', null)
                             })
@@ -192,16 +171,8 @@ export default {
                 }
             })
         },
-        togglePassword(input, button) {
-            if (input.type === "password") {
-                input.type = 'text'
-                button.classList.value = 'btn btn-success'
-                button.textContent = 'Hide'
-            } else {
-                input.type = 'password'
-                button.classList.value = 'btn btn-outline-success'
-                button.textContent = 'Show'
-            }
+        changePassword({commit}, credentials) {
+            
         }
     },
 

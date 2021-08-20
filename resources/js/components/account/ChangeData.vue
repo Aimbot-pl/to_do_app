@@ -1,8 +1,9 @@
 <template>
-    <div class="mx-auto col-12 col-sm-8 col-md-6">
-        <h1>Your data</h1>
-        <form @submit.prevent="saveChanges(localUserData)">
-            <h2 class="text-danger d-block" v-if="localErrors">{{ localErrors.message }}</h2>
+	<h1 class="text-center my-3">Your data</h1>
+	<form class="mx-auto px-3" @submit.prevent="saveChanges(localUserData)">
+		<h2 class="text-danger d-block" v-if="localErrors">
+			{{ localErrors.message }}
+		</h2>
 		<h2 v-else-if="message">{{ message }}</h2>
 		<div class="row g-3">
 			<div class="col">
@@ -54,7 +55,10 @@
 				id="nick"
 				class="form-control"
 			/>
-			<div class="invalid-feedback d-block" v-if="localErrors && localErrors.nick">
+			<div
+				class="invalid-feedback d-block"
+				v-if="localErrors && localErrors.nick"
+			>
 				<p v-for="error in localErrors.nick" :key="error">
 					{{ error }}
 				</p>
@@ -69,7 +73,10 @@
 				id="email"
 				class="form-control"
 			/>
-			<div class="invalid-feedback d-block" v-if="localErrors && localErrors.email">
+			<div
+				class="invalid-feedback d-block"
+				v-if="localErrors && localErrors.email"
+			>
 				<p v-for="error in localErrors.email" :key="error">
 					{{ error }}
 				</p>
@@ -89,7 +96,7 @@
 						value="male"
 					/>
 				</p>
-				<div style="width: 1rem;"></div>
+				<div style="width: 1rem"></div>
 				<p class="col border border-2 rounded-3 d-flex p-1">
 					<label for="female" class="flex-grow-1">Female</label>
 					<input
@@ -112,73 +119,56 @@
 			</div>
 		</div>
 		<div class="text-center mt-3">
-			<input
-				type="submit"
-				class="btn btn-success"
-				value="Save changes"
-			/>
+			<input type="submit" class="btn btn-success" value="Save changes" />
 		</div>
-        </form>
-    </div>
+	</form>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
-    export default {
-        name: 'Settings',
-        data() {
-            return {
-				localUserData: {
-					first_name: "",
-					nick: "",
-					last_name: "",
-					email: "",
-					gender: "",
-				},
-				message: null,
-				showModal: false,
-                localErrors: {}
-            }
-        },
-		mounted() {
-			if (this.userData) {
-				this.localUserData = {...this.userData}
-			} else if (this.errors) {
-				this.localErrors = this.errors
-			}
-		},
-		computed: {
-			...mapGetters({
-				userId: 'userId', 
-				errors: 'userErrors', 
-				userData: 'userData'
-				})
-		},
-		methods: {
-			...mapActions(['fetchUserData', 'saveChanges']),
-			closeModal() {
-				this.showModal = false
-				this.message = null
-			}
+import { mapActions, mapGetters } from "vuex";
+export default {
+	name: "Settings",
+	data() {
+		return {
+			localUserData: {
+				first_name: "",
+				nick: "",
+				last_name: "",
+				email: "",
+				gender: "",
+			},
+			message: null,
+			showModal: false,
+			localErrors: {},
+		};
+	},
+	mounted() {
+		document.title = `Preferences`;
+		if (this.user) {
+			this.localUserData = { ...this.user };
+		} else if (this.errors) {
+			this.localErrors = this.errors;
 		}
-    }
+		if (!this.user) {
+			this.$router.replace({
+				name: "user",
+				query: { redirect: $route.fullPath },
+			});
+		}
+	},
+	computed: {
+		...mapGetters({
+			userId: "userId",
+			errors: "userErrors",
+			user: "user",
+		}),
+	},
+	methods: {
+		...mapActions(["fetchUserData", "saveChanges"]),
+		closeModal() {
+			this.showModal = false;
+			this.message = null;
+		},
+	},
+};
 </script>
-
-<style>
-.modal-mask {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, .5);
-  display: table;
-  transition: opacity .3s ease;
-}
-
-.modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
-}
-</style>

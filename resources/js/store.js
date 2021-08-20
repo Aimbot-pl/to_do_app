@@ -1,11 +1,11 @@
 import { createStore } from 'vuex'
 import account from './components/modules/account'
-import products from './components/modules/products'
+import register from './components/modules/register'
 
 const store = createStore({
     modules: {
         account,
-        products
+        register,
     },
 })
 
