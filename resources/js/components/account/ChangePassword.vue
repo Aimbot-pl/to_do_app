@@ -1,6 +1,21 @@
 <template>
 	<h1 class="text-center my-3">Change password</h1>
-	<form @submit.prevent="submitForm(credentials)" class="mx-auto px-4">
+	<h3 class="invalid-feedback" v-if="errors.message">
+		{{ errors.message }}
+	</h3>
+	<h3>
+		{{ message }}
+	</h3>
+	<form
+		@submit.prevent="
+			submitForm({
+				old_password,
+				new_password,
+				new_password_confirmation,
+			})
+		"
+		class="mx-auto px-4"
+	>
 		<div class="row">
 			<label for="old_password" class="form-label"
 				>Enter old password</label
@@ -10,14 +25,19 @@
 				name="old_password"
 				id="old_password"
 				class="form-control"
-                v-model="credentials.old_password"
-                ref="old_password"
+				v-model="old_password"
+				autofocus
+				ref="old_password"
 			/>
-            <div v-if="errors.old_password">
-                <p v-for="error in errors.old_password" :key="error" class="invalid-feedback d-block">
-                    {{ error }}
-                </p>
-            </div>
+			<div v-if="errors.old_password">
+				<p
+					v-for="error in errors.old_password"
+					:key="error"
+					class="invalid-feedback d-block"
+				>
+					{{ error }}
+				</p>
+			</div>
 		</div>
 
 		<div class="row">
@@ -29,14 +49,18 @@
 				name="new_password"
 				id="new_password"
 				class="form-control"
-                v-model="credentials.new_password"
-                ref="new_password"
+				v-model="new_password"
+				ref="new_password"
 			/>
-            <div v-if="errors.new_password">
-                <p v-for="error in errors.new_password" :key="error" class="invalid-feedback d-block">
-                    {{ error }}
-                </p>
-            </div>
+			<div v-if="errors.new_password">
+				<p
+					v-for="error in errors.new_password"
+					:key="error"
+					class="invalid-feedback d-block"
+				>
+					{{ error }}
+				</p>
+			</div>
 		</div>
 
 		<div class="row">
@@ -48,18 +72,21 @@
 				name="new_password_confirmation"
 				id="new_password_confirmation"
 				class="form-control"
-                v-model="credentials.new_password_confirmation"
-                ref="new_password_confirmation"
+				v-model="new_password_confirmation"
+				ref="new_password_confirmation"
 			/>
-            <div v-if="errors.new_password_confirmation">
-                <p v-for="error in errors.new_password_confirmation" :key="error" class="invalid-feedback d-block">
-                    {{ error }}
-                </p>
-            </div>
-
+			<div v-if="errors.new_password_confirmation">
+				<p
+					v-for="error in errors.new_password_confirmation"
+					:key="error"
+					class="invalid-feedback d-block"
+				>
+					{{ error }}
+				</p>
+			</div>
 		</div>
 
-        <div class="text-center mt-3">
+		<div class="text-center mt-3">
 			<input
 				type="submit"
 				:class="{ disabled: isDisabled }"
@@ -71,35 +98,58 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
 	data() {
 		return {
-			credentials: {
-				old_password: null,
-				new_password: null,
-				new_password_confirmation: null,
-			},
-			errors: {
-                new_password: ['This field is required.', 'Password must contain at least 4 symbols']
-            },
-			isDisabled: false,
+			old_password: null,
+			new_password: null,
+			new_password_confirmation: null,
+			// message: null,
+			// errors: {},
+			// isDisabled: false,
 		};
+	},
+	computed: {
+		...mapGetters({
+			errorss: 'changePasswordErrors',
+			messageText: 'message',
+		}),
+		isDisabled() {
+			return (this.errors.old_password*this.errors.new_password*this.errors.new_password_confirmation) ? true : false
+		},
+		message() {
+			return this.messageText ? this.messageText : ''
+		},
+		errors() {
+			return {...this.errorss}
+		}
 	},
 	methods: {
 		...mapActions({
 			changePassword: "changePassword",
 		}),
 		submitForm(credentials) {
-			this.isDisabled = true;
-			this.changePassword(credentials);
+			// this.isDisabled = true;
+			if (this.checkEverything()) {
+				this.changePassword(credentials);
+			} else {
+				// this.isDisabled = false;
+			}
+		},
+		checkEverything() {
+			return this.check(this.$refs.old_password) *
+				this.check(this.$refs.new_password) *
+				this.check(this.$refs.new_password_confirmation)
+		},
+		check(input) {
+			if (!input.value) {
+				input.classList.value = "form-control is-invalid";
+				return false;
+			}
+			input.classList.value = "form-control";
+			return true;
 		},
 	},
 };
 </script>
-
-<style>
-    input[type="text"],[type="password"] {
-        margin-bottom: 0.75rem;
-    }
-</style>

@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
     Route::put('/user/{user}', [UserController::class, 'update']);
     Route::get('/user/{id}', [UserController::class, 'show']);
+    Route::put('/user/{user}/change-password', [UserController::class, 'changePassword']);
 });
 
 Route::post('/register', [UserController::class, 'register']);

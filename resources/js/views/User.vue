@@ -9,6 +9,23 @@
 			</div>
 		</div>
 
+		<!-- <nav aria-label="breadcrumb">
+			<ol class="breadcrumb border border-2 rounded-2 col-12 px-3 py-1">
+				<router-link
+					class="nav-link"
+					:to="{
+						name: 'profile',
+						params: { user: user.nick },
+					}"
+				>
+					Profile
+				</router-link>
+				<router-link class="nav-link" :to="{ name: 'settings' }">
+					Preferences
+				</router-link>
+			</ol>
+		</nav> -->
+
 		<nav class="navbar navbar-expand mb-3">
 			<ul class="navbar-nav border border-2 rounded-2 col-12 px-3 py-1">
 				<li class="nav-item nav-path">
@@ -31,9 +48,7 @@
 			</ul>
 		</nav>
 	</div>
-	<router-view>
-		
-	</router-view>
+	<router-view> </router-view>
 </template>
 
 <script>

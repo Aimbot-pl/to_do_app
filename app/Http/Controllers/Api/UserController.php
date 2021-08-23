@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Http\Requests\UserUpdateProfileRequest;
+use App\Http\Requests\UserChangePasswordRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -85,7 +86,7 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the user's data in database.
      *
      * @param  \App\Http\Requests\UserUpdateProfileRequest  $userUpdateProfileRequest
      * @param  int  $id
@@ -99,6 +100,30 @@ class UserController extends Controller
         }
         $user->update($userUpdateProfileRequest->all());
         return response(['message' => 'Changes confirmed'], 201);
+    }
+
+    /**
+     * Update password of the user in database.
+     *
+     * @param  \App\Http\Requests\UserChangePasswordRequest $userChangePasswordRequest
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function changePassword(UserChangePasswordRequest $userChangePasswordRequest, User $user)
+    {
+        $userChangePasswordRequest->validated();
+        if (!password_verify($userChangePasswordRequest->old_password, $user->password)) {
+            $response = [
+                'errors' => [
+
+                    'old_password' => ['Password is invalid']
+                ],
+                'message' => 'The given data was invalid'
+            ];
+            return response($response, 422);
+        }
+        $user->update(['password' => password_hash($userChangePasswordRequest->new_password, PASSWORD_BCRYPT)]);
+        return response(['message' => 'Password has been changed']);
     }
 
     /**

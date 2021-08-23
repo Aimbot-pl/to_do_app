@@ -21461,7 +21461,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       userError: undefined,
       showPage: true,
       changingPassword: false,
-      changePasswordError: null
+      changePasswordError: null,
+      message: null
     };
   },
   getters: {
@@ -21479,6 +21480,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     userErrors: function userErrors(state) {
       return state.userError;
+    },
+    changePasswordErrors: function changePasswordErrors(state) {
+      return state.changePasswordError;
+    },
+    message: function message(state) {
+      return state.message;
     }
   },
   mutations: {
@@ -21499,11 +21506,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       state.user = payload.user;
     },
     fetchingStart: function fetchingStart(state) {
-      return state.userFetching = true;
+      state.userFetching = true;
+      state.message = null;
     },
     fetchingStop: function fetchingStop(state, error) {
       state.userFetching = false;
       state.userError = error;
+    },
+    changePasswordStop: function changePasswordStop(state, error) {
+      state.userFetching = false;
+      state.changePasswordError = _objectSpread(_objectSpread({}, error.errors), {}, {
+        message: error.message
+      });
     },
     cleanLoginErrors: function cleanLoginErrors(state) {
       state.loginError = null;
@@ -21522,23 +21536,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var commit = _ref.commit,
           state = _ref.state;
       commit('loginStart');
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/login", {
-        email: credentials.username,
-        password: credentials.password
-      }).then(function (res) {
-        sessionStorage.setItem('accessToken', res.data.token);
-        sessionStorage.setItem('user', JSON.stringify(res.data.user));
-        commit('loginStop', null);
-        commit('updateAuth', {
-          accessToken: sessionStorage.getItem('accessToken'),
-          user: JSON.parse(sessionStorage.getItem('user'))
-        });
-        return state.userId;
-      })["catch"](function (err) {
-        commit('loginStop', err.response.data.message);
-        commit('updateAuth', {
-          accessToken: null,
-          user: null
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/sanctum/csrf-cookie').then(function () {
+        axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/login", {
+          email: credentials.username,
+          password: credentials.password
+        }).then(function (res) {
+          sessionStorage.setItem('accessToken', res.data.token);
+          sessionStorage.setItem('user', JSON.stringify(res.data.user));
+          commit('loginStop', null);
+          commit('updateAuth', {
+            accessToken: sessionStorage.getItem('accessToken'),
+            user: JSON.parse(sessionStorage.getItem('user'))
+          });
+          return state.userId;
+        })["catch"](function (err) {
+          commit('loginStop', err.response.data.message);
+          commit('updateAuth', {
+            accessToken: null,
+            user: null
+          });
         });
       });
     },
@@ -21557,18 +21573,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     fetchAuth: function fetchAuth(_ref4) {
       var commit = _ref4.commit;
-      console.log('updating started');
+      // console.log('updating started')
       commit('updateAuth', {
         accessToken: sessionStorage.getItem('accessToken'),
         user: JSON.parse(sessionStorage.getItem('user'))
-      });
-      console.log('updating finished');
+      }); // console.log('updating finished')
     },
     fetchUserData: function fetchUserData(_ref5) {
       var state = _ref5.state,
           commit = _ref5.commit;
-      commit('fetchingStart');
-      console.log('fetching start');
+      commit('fetchingStart'); // console.log('fetching start')
 
       if (state.user) {
         axios__WEBPACK_IMPORTED_MODULE_0___default()({
@@ -21579,7 +21593,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             Authorization: "Bearer ".concat(state.accessToken)
           }
         }).then(function (res) {
-          console.log(res.data);
+          // console.log(res.data)
           commit('fetchingStop', null);
           commit('fetchData', res.data);
         })["catch"](function (err) {
@@ -21591,9 +21605,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               path: '/login'
             });
           }
-        })["finally"](function () {
-          return console.log('fetching finished');
-        });
+        }); // .finally(() => console.log('fetching finished'))
       } else {
         commit('logout');
         _router__WEBPACK_IMPORTED_MODULE_1__.default.replace({
@@ -21606,7 +21618,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           commit = _ref6.commit,
           dispatch = _ref6.dispatch;
       return dispatch('fetchUserData').then(function () {
-        console.log('fetched');
+        // console.log('fetched')
         console.log(state.user.id);
 
         if (JSON.stringify(state.userError) === JSON.stringify(submittedData)) {
@@ -21640,7 +21652,44 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     changePassword: function changePassword(_ref7, credentials) {
-      var commit = _ref7.commit;
+      var state = _ref7.state,
+          getters = _ref7.getters,
+          commit = _ref7.commit;
+      console.log(credentials);
+      var returnValue = null;
+      state.changePasswordError = null;
+      var errors = null;
+
+      if (credentials.new_password !== credentials.new_password_confirmation) {
+        errors = _objectSpread(_objectSpread({}, errors), {}, {
+          new_password_confirmation: ['Passwords are not matching']
+        });
+      }
+
+      if (errors === getters.changePasswordErrors) {
+        commit('fetchingStart');
+        axios__WEBPACK_IMPORTED_MODULE_0___default().get('/sanctum/csrf-cookie').then(axios__WEBPACK_IMPORTED_MODULE_0___default()({
+          method: 'put',
+          url: "/api/user/".concat(state.user.id, "/change-password"),
+          data: _objectSpread({}, credentials),
+          headers: {
+            Accept: 'application/json',
+            Authorization: "Bearer ".concat(state.accessToken)
+          }
+        }).then(function (res) {
+          console.log(res);
+          state.message = res.data.message;
+          commit('changePasswordStop', {
+            errors: null,
+            message: null
+          });
+        })["catch"](function (err) {
+          console.log(err.response);
+          commit('changePasswordStop', err.response.data);
+        }));
+      } else {
+        state.changePasswordError = errors;
+      }
     }
   }
 });
