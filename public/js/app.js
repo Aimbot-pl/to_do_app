@@ -21873,6 +21873,11 @@ var routes = [{
   component: function component() {
     return __webpack_require__.e(/*! import() */ "resources_js_components_TestSecond_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/TestSecond.vue */ "./resources/js/components/TestSecond.vue"));
   }
+}, {
+  path: '/tasks',
+  component: function component() {
+    return __webpack_require__.e(/*! import() */ "resources_js_views_Tasks_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Tasks.vue */ "./resources/js/views/Tasks.vue"));
+  }
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__.createRouter({
   history: (0,vue_router__WEBPACK_IMPORTED_MODULE_1__.createWebHistory)(),

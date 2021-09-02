@@ -14,7 +14,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
 var _hoisted_1 = {
-  "class": "col-lg-10 border border-2 rounded-2"
+  "class": "border border-2 rounded-2"
 };
 var _hoisted_2 = {
   "class": "row"

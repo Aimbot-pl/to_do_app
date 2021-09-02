@@ -81,6 +81,10 @@ const routes = [
         name: 'testSecond',
         component: () => import('./components/TestSecond.vue'),
     },
+    {
+        path: '/tasks',
+        component: () => import('./views/Tasks.vue')
+    }
 ];
 
 const router = new createRouter({

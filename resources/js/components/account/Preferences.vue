@@ -1,5 +1,5 @@
 <template>
-	<div class="col-lg-10 border border-2 rounded-2">
+	<div class="border border-2 rounded-2">
 		<div class="row">
 			<div class="col border-end border-2">
 				<div class="d-flex flex-column flex-shrink-0 p-3">
