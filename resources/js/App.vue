@@ -96,3 +96,15 @@ export default {
 	}
 };
 </script>
+
+<style>
+	.password-button {
+		position: absolute;
+		left: calc(100% - 30px);
+		top: .4em;
+		padding: 5px;
+		z-index: 3;
+		border: none;
+		background-color: inherit;
+	}
+</style>

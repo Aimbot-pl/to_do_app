@@ -86,12 +86,10 @@
 				/>
 				<button
 					type="button"
-					class="btn btn-outline-success"
+					class="password-button bi bi-eye-slash"
 					ref="passwordButton"
 					@click.prevent="togglePassword($refs.password, $refs.passwordButton)"
-				>
-					Show
-				</button>
+				></button>
 			</div>
 			<div
 				class="invalid-feedback d-block"
@@ -117,7 +115,7 @@
 				/>
 				<button
 					type="button"
-					class="btn btn-outline-success"
+					class="password-button bi bi-eye-slash"
 					ref="passwordConfirmationButton"
 					@click.prevent="
 						togglePassword(
@@ -125,9 +123,7 @@
 							$refs.passwordConfirmationButton
 						)
 					"
-				>
-					Show
-				</button>
+				></button>
 			</div>
 			<div
 				class="invalid-feedback d-block"
@@ -186,66 +182,49 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { computed, ref } from '@vue/reactivity';
+import { useStore } from 'vuex';
 import togglePassword from '../../helpers/TogglePassword'
+import { onMounted } from '@vue/runtime-core';
 export default {
-	data() {
-		return {
-			localUserData: {
-				first_name: "",
-				nick: "",
-				last_name: "",
-				email: "",
-				password: "",
-				password_confirmation: "",
-				gender: "",
-			},
-			isDisabled: false,
-		};
-	},
-	mounted() {
-		setTimeout(() => {
-			this.$refs.nameInput.focus();
-		}, 500);
-	},
-	computed: {
-		...mapGetters({
-			errors: 'registerErrors'
-		})
-	},
-	methods: {
-		...togglePassword,
-		...mapActions({
-			signUp: 'signUp'
-		}),
-		createAccount() {
-			this.isDisabled = true;
-			this.errors = null;
-			this.signUp(this.localUserData).then(() => this.isDisabled = false)
+	name: "Register component",
+	setup() {
+		const store = useStore();
 
-			// axios.get("/sanctum/csrf-cookie").then((response) => {
-			// 	axios
-			// 		.post("/api/register", {
-			// 			nick: this.nick,
-			// 			first_name: this.first_name,
-			// 			last_name: this.last_name,
-			// 			email: this.email,
-			// 			password: this.password,
-			// 			password_confirmation: this.password_confirmation,
-			// 			gender: this.gender,
-			// 		})
-			// 		.then((res) => {
-			// 			this.message = res.data.message;
-			// 		})
-			// 		.catch((err) => {
-			// 			this.errors = err.response.data.errors;
-			// 			this.errors.message = err.response.data.message;
-			// 		})
-			// 		.finally(() => {
-			// 			this.isDisabled = false;
-			// 		});
-			// });
-		},
+		const nameInput = ref(null);
+		onMounted(() => {
+			nameInput.value.focus();
+		});
+
+		const signUp = () => store.dispatch('signUp');
+		const createAccount = () => {
+			isDisabled.value = true;
+			errors = null;
+			signUp(localUserData.value).then(() => isDisabled.value = false)
+		}
+
+		const isDisabled = ref(false);
+		const localUserData = ref({});
+		localUserData.value = {
+			first_name: "",
+			nick: "",
+			last_name: "",
+			email: "",
+			password: "",
+			password_confirmation: "",
+			gender: "",
+		};
+		const errors = computed(() => store.getters.registerErrors);
+
+		return {
+			signUp,
+			nameInput,
+			createAccount,
+			isDisabled,
+			errors,
+			localUserData,
+			...togglePassword
+		}
 	},
 };
 </script>

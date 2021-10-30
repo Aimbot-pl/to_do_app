@@ -230,14 +230,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   togglePassword: function togglePassword(input, button) {
-    if (input.type === "password") {
+    if (input.type === 'password') {
       input.type = 'text';
-      button.classList.value = 'btn btn-success';
-      button.textContent = 'Hide';
+      button.classList.add('bi-eye');
+      button.classList.remove('bi-eye-slash');
     } else {
       input.type = 'password';
-      button.classList.value = 'btn btn-outline-success';
-      button.textContent = 'Show';
+      button.classList.add('bi-eye-slash');
+      button.classList.remove('bi-eye');
     }
   }
 });
