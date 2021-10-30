@@ -75,27 +75,24 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
+import { computed } from '@vue/reactivity';
+import { useStore } from "vuex";
 export default {
 	name: "App",
-	created() {
-		this.fetchAuth();
-	},
-	computed: {
-		...mapGetters({
-			accessToken: "accessToken",
-			user: "user",
-		}),
-	},
-	methods: {
-		...mapActions(["logout", "fetchAuth"]),
-		logFetchAccessToken() {
-			this.fetchAuth();
-			return this.accessToken;
-		},
-		logUser() {
-			console.log(this.user)
-		}
-	},
+	setup() {
+		const store = useStore();
+
+        const logUser = () => console.log('You has been logged');
+		const logout = () => store.dispatch('logout');
+		const fetchAuth = () => store.dispatch('fetchAuth');
+		fetchAuth();
+
+		return {
+			fetchAuth,
+			logUser,
+			logout,
+			user: computed(() => store.state.account.user)
+		};
+	}
 };
 </script>
