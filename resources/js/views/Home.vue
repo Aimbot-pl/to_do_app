@@ -21,7 +21,7 @@
 					class="btn btn-success px-5"
 					data-bs-toggle="modal"
 					data-bs-target="#register"
-					@click="showModal = true"
+					@click="toggleModal(true)"
 				>
 					Register
 				</button>
@@ -47,7 +47,7 @@
 							class="btn-close"
 							data-bs-dismiss="modal"
 							aria-label="Close"
-							@click="showModal = false"
+							@click="toggleModal(false)"
 						></button>
 					</div>
 					<div class="modal-body">
@@ -60,34 +60,32 @@
 </template>
 
 <script>
-	import { mapGetters } from 'vuex';
+	import { useStore } from 'vuex';
 	import LoginComp from "../components/account/Login.vue";
 	import Register from "../components/account/Register.vue";
 	import Feed from "../components/account/Feed.vue";
+import { computed, ref } from '@vue/reactivity';
 
 	export default {
 		name: "Home",
-		data() {
-			return {
-				showModal: false,
-				accessToken: null,
-			}
-		},
 		components: {
 			LoginComp,
 			Register,
 			Feed,
 		},
-		created() {
-			this.accessToken = this.stateAccessToken;
-		},
-		updated() {
-			this.accessToken = this.stateAccessToken;
-		},
-		computed: {
-			...mapGetters({
-				userId: 'userId',
-			})
+		setup() {
+			const store = useStore();
+			const showModal = ref(false);
+
+			const toggleModal = (state) => {
+				showModal.value = state
+			}
+			
+			return {
+				showModal,
+				toggleModal,
+				userId: computed(() => store.getters.userId)
+			}
 		},
 	};
 </script>
