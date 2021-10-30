@@ -22630,10 +22630,6 @@ __webpack_require__.r(__webpack_exports__);
   setup: function setup() {
     var store = (0,vuex__WEBPACK_IMPORTED_MODULE_0__.useStore)();
 
-    var logUser = function logUser() {
-      return console.log('You has been logged');
-    };
-
     var logout = function logout() {
       return store.dispatch('logout');
     };
@@ -22645,7 +22641,6 @@ __webpack_require__.r(__webpack_exports__);
     fetchAuth();
     return {
       fetchAuth: fetchAuth,
-      logUser: logUser,
       logout: logout,
       user: (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_1__.computed)(function () {
         return store.state.account.user;
@@ -22755,8 +22750,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       params: {
         user: $setup.user.nick
       }
-    },
-    onClick: $setup.logUser
+    }
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [_hoisted_11];
@@ -22766,7 +22760,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   }, 8
   /* PROPS */
-  , ["to", "onClick"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+  , ["to"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
     onClick: _cache[0] || (_cache[0] = function () {
       return $setup.logout && $setup.logout.apply($setup, arguments);
     }),

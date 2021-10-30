@@ -51,7 +51,6 @@
 										name: 'user',
 										params: { user: user.nick },
 									}"
-									@click="logUser"
 									>Preferences</router-link
 								>
 							</li>
@@ -82,14 +81,12 @@ export default {
 	setup() {
 		const store = useStore();
 
-        const logUser = () => console.log('You has been logged');
 		const logout = () => store.dispatch('logout');
 		const fetchAuth = () => store.dispatch('fetchAuth');
 		fetchAuth();
 
 		return {
 			fetchAuth,
-			logUser,
 			logout,
 			user: computed(() => store.state.account.user)
 		};
