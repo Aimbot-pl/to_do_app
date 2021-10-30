@@ -9,23 +9,6 @@
 			</div>
 		</div>
 
-		<!-- <nav aria-label="breadcrumb">
-			<ol class="breadcrumb border border-2 rounded-2 col-12 px-3 py-1">
-				<router-link
-					class="nav-link"
-					:to="{
-						name: 'profile',
-						params: { user: user.nick },
-					}"
-				>
-					Profile
-				</router-link>
-				<router-link class="nav-link" :to="{ name: 'settings' }">
-					Preferences
-				</router-link>
-			</ol>
-		</nav> -->
-
 		<nav class="navbar navbar-expand mb-3">
 			<ul class="navbar-nav border border-2 rounded-2 col-12 px-3 py-1">
 				<li class="nav-item nav-path">
@@ -52,31 +35,24 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { computed } from '@vue/reactivity';
+import { useStore } from "vuex";
 export default {
-	data() {
+	name: "User component",
+	setup() {
+		const store = useStore();
+		const fetchData = () => store.dispatch('fetchUserData');
+		fetchData();
+		const user = computed(() => store.getters.user);
+		const errors = computed(() => store.getters.userErrors);
+		document.title = user.value.nick;
+		
 		return {
-			user: null,
-		};
-	},
-	created() {
-		this.fetchDatas();
-	},
-	mounted() {
-		this.user = this.userData;
-		document.title = this.user.nick;
-	},
-	computed: {
-		...mapGetters({
-			errors: "userErrors",
-			userData: "user",
-		}),
-	},
-	methods: {
-		...mapActions({
-			fetchDatas: "fetchUserData",
-		}),
-	},
+			fetchData,
+			user, 
+			errors
+		}
+	}
 };
 </script>
 
