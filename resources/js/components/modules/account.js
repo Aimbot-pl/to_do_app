@@ -17,37 +17,39 @@ export default {
     },
     getters: {
         loginErrors(state) {
-            return state.loginError
+            return state.loginError;
         },
         userId(state) {
-            return state.user.id
+            return (state.user && state.user.id) ? state.user.id : null;
         },
         accessToken(state) {
-            return state.accessToken
+            return state.accessToken;
         },
         user(state) {
-            return state.user
+            return state.user || null;
         },
         userErrors(state) {
-            return state.userError
+            return state.userError;
         },
         changePasswordErrors(state) {
-            return state.changePasswordError
+            return state.changePasswordError;
         },
         message(state) {
-            return state.message
+            return state.message;
         },
     },
     mutations: {
         loginStart: state => state.loggingIn = true,
         loginStop(state, errorMessage) {
-            state.loggingIn = false
-            state.loginError = errorMessage
+            state.loggingIn = false;
+            state.userId = (errorMessage && errorMessage.id) ? errorMessage.id : null;
+            state.loginError = errorMessage;
         },
         logout(state) {
             sessionStorage.clear()
-            state.accessToken = null
-            state.user = null
+            state.accessToken = null;
+            state.user = null;
+            state.userId = null;
         },
         updateAuth(state, payload) {
             state.accessToken = payload.accessToken

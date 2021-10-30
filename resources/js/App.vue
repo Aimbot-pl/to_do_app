@@ -81,13 +81,10 @@ export default {
 	created() {
 		this.fetchAuth();
 	},
-	beforeMount() {
-		this.user = this.userData
-	},
 	computed: {
 		...mapGetters({
 			accessToken: "accessToken",
-			userData: "user",
+			user: "user",
 		}),
 	},
 	methods: {

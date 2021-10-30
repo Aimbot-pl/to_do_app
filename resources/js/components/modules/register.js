@@ -38,7 +38,7 @@ export default {
                     gender: credentials.gender,
                 }
             ).then((res) => {
-                commit('registerStop', res.data.message)
+                commit('registerStop', res.data)
             }).catch((err) => {
                 commit('registerStop', err.response.data)
             })

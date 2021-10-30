@@ -1,5 +1,5 @@
 <template>
-	<div v-if="accessToken">
+	<div v-if="userId">
 		<Feed/>
 	</div>
 	<div v-else class="row justify-content-around mt-5">
@@ -79,15 +79,14 @@
 			Feed,
 		},
 		created() {
-			this.accessToken = this.stateAccessToken
+			this.accessToken = this.stateAccessToken;
 		},
 		updated() {
-			this.accessToken = this.stateAccessToken
-			console.log(this.stateAccessToken)
+			this.accessToken = this.stateAccessToken;
 		},
 		computed: {
 			...mapGetters({
-				stateAccessToken: 'accessToken',
+				userId: 'userId',
 			})
 		},
 	};
