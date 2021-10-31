@@ -87,7 +87,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           router.replace(route.query.redirect);
         } else {
           router.replace({
-            name: "user",
+            name: "profile",
             params: {
               user: user.nick
             }

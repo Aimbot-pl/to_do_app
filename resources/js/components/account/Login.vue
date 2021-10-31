@@ -65,7 +65,7 @@ export default {
 							router.replace(route.query.redirect);
 					} else {
 						router.replace({
-							name: "user",
+							name: "profile",
 							params: { user: user.nick }
 						});
 					}
