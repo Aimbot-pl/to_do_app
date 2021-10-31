@@ -22940,25 +22940,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     login: function login(_ref, credentials) {
       var commit = _ref.commit,
           state = _ref.state;
-      commit('loginStart');
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/sanctum/csrf-cookie').then(function () {
-        axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/login", {
-          email: credentials.username,
-          password: credentials.password
-        }).then(function (res) {
-          sessionStorage.setItem('accessToken', res.data.token);
-          sessionStorage.setItem('user', JSON.stringify(res.data.user));
-          commit('loginStop', null);
-          commit('updateAuth', {
-            accessToken: sessionStorage.getItem('accessToken'),
-            user: JSON.parse(sessionStorage.getItem('user'))
-          });
-          return state.userId;
-        })["catch"](function (err) {
-          commit('loginStop', err.response.data.message);
-          commit('updateAuth', {
-            accessToken: null,
-            user: null
+      return new Promise(function (resolve, reject) {
+        commit('loginStart');
+        axios__WEBPACK_IMPORTED_MODULE_0___default().get('/sanctum/csrf-cookie').then(function () {
+          axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/login", {
+            email: credentials.username,
+            password: credentials.password
+          }).then(function (res) {
+            sessionStorage.setItem('accessToken', res.data.token);
+            sessionStorage.setItem('user', JSON.stringify(res.data.user));
+            commit('loginStop', null);
+            commit('updateAuth', {
+              accessToken: sessionStorage.getItem('accessToken'),
+              user: JSON.parse(sessionStorage.getItem('user'))
+            });
+            resolve(state.user);
+          })["catch"](function (err) {
+            commit('loginStop', err.response.data.message);
+            commit('updateAuth', {
+              accessToken: null,
+              user: null
+            });
+            reject(err);
           });
         });
       });

@@ -60,7 +60,7 @@ class UserController extends Controller
         $user = User::where('email', $fields['email'])->first();
 
         if (!$user || !password_verify($fields['password'], $user->password)) {
-            return response(['message' => 'Bad creds'], 422);
+            return response(['message' => 'Incorect email or/and password'], 422);
         }
         $response = [
             'user' => $user,

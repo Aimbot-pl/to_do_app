@@ -85,12 +85,14 @@ export default {
     },
     actions: {
         login({ commit, state }, credentials) {
-            commit('loginStart')
-            axios.get('/sanctum/csrf-cookie').then(() => {
-                axios.post("/api/login", {
-                    email: credentials.username,
-                    password: credentials.password,
-                })
+            return new Promise((resolve, reject) => {
+                
+                commit('loginStart')
+                axios.get('/sanctum/csrf-cookie').then(() => {
+                    axios.post("/api/login", {
+                        email: credentials.username,
+                        password: credentials.password,
+                    })
                     .then((res) => {
                         sessionStorage.setItem('accessToken', res.data.token);
                         sessionStorage.setItem('user', JSON.stringify(res.data.user))
@@ -99,7 +101,7 @@ export default {
                             accessToken: sessionStorage.getItem('accessToken'),
                             user: JSON.parse(sessionStorage.getItem('user'))
                         })
-                        return state.userId
+                        resolve(state.user);
                     })
                     .catch((err) => {
                         commit('loginStop', err.response.data.message)
@@ -107,7 +109,10 @@ export default {
                             accessToken: null,
                             user: null
                         })
+                        reject(err);
                     });
+                });
+
             })
         },
         doCleanLoginErrors({ commit }) {
