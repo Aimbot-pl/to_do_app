@@ -125,50 +125,71 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { computed, ref } from '@vue/reactivity';
+import { mapActions, mapGetters, useStore } from "vuex";
+import { onMounted } from '@vue/runtime-core';
+import { useRoute, useRouter } from 'vue-router';
 export default {
 	name: "Settings",
-	data() {
-		return {
-			localUserData: {
-				first_name: "",
-				nick: "",
-				last_name: "",
-				email: "",
-				gender: "",
-			},
-			message: null,
-			showModal: false,
-			localErrors: {},
+	setup() {
+		const store = useStore();
+		const route = useRoute();
+		const router = useRouter();
+
+		const localUserData = ref({});
+		localUserData.value = {
+			first_name: "",
+			nick: "",
+			last_name: "",
+			email: "",
+			gender: ""
 		};
-	},
-	mounted() {
-		document.title = `Preferences`;
-		if (this.user) {
-			this.localUserData = { ...this.user };
-		} else if (this.errors) {
-			this.localErrors = this.errors;
+		
+		const showModal = ref(false);
+		const message = ref('');
+		const localErrors = ref({});
+
+		const closeModal = () => {
+			showModal.value = false;
+			message.value = '';
 		}
-		if (!this.user) {
-			this.$router.replace({
-				name: "user",
-				query: { redirect: $route.fullPath },
-			});
+
+		const userId = computed(() => store.getters.userId); 
+		const errors = computed(() => store.getters.userErrors);
+		const user = computed(() => store.getters.user);
+
+		const fetchUserData = () => store.dispatch('fetchUserData');
+		const saveChanges = () => store.dispatch('saveChanges');
+
+		onMounted(() => {	
+			document.title = `Preferences`;
+			if (user.value) {
+				localUserData.value = { ...user.value };
+			} else if (errors.value) {
+				localErrors.value = errors.value;
+			}
+			if (!user.value) {
+				router.replace({
+					name: "user",
+					query: { redirect: route.fullPath },
+				});
+			}
+		});
+
+
+		return {
+			localUserData,
+			showModal,
+			message,
+			localErrors,
+			closeModal,
+			userId,
+			errors,
+			user,
+			fetchUserData,
+			saveChanges
 		}
-	},
-	computed: {
-		...mapGetters({
-			userId: "userId",
-			errors: "userErrors",
-			user: "user",
-		}),
-	},
-	methods: {
-		...mapActions(["fetchUserData", "saveChanges"]),
-		closeModal() {
-			this.showModal = false;
-			this.message = null;
-		},
-	},
+
+	}
 };
 </script>
