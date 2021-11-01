@@ -62,8 +62,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return store.dispatch('fetchUserData');
     };
 
-    var saveChanges = function saveChanges() {
-      return store.dispatch('saveChanges');
+    var saveChanges = function saveChanges(datas) {
+      return store.dispatch('saveChanges', datas);
     };
 
     (0,_vue_runtime_core__WEBPACK_IMPORTED_MODULE_3__.onMounted)(function () {

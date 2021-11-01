@@ -254,7 +254,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                site = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : "/api/tasks";
+                site = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : "/api/v1/tasks";
 
                 if (!site) {
                   _context.next = 6;
@@ -291,7 +291,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.next = 2;
-                return axios.post("/api/tasks", {
+                return axios.post("/api/v1/tasks", {
                   name: data.name,
                   when: data.when,
                   reminder: data.reminder
@@ -327,7 +327,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context3.prev = _context3.next) {
               case 0:
                 _context3.next = 2;
-                return axios["delete"]("/api/tasks/" + id).then(function (res) {
+                return axios["delete"]("/api/v1/tasks/" + id).then(function (res) {
                   _this3.loadTasks();
                 })["catch"](function (err) {
                   _this3.status = err.status;
@@ -355,7 +355,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context4.prev = _context4.next) {
               case 0:
                 _context4.next = 2;
-                return axios.put("/api/tasks/" + data.id, {
+                return axios.put("/api/v1/tasks/" + data.id, {
                   name: data.name,
                   when: data.when,
                   reminder: data.reminder

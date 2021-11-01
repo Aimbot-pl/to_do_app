@@ -22943,7 +22943,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return new Promise(function (resolve, reject) {
         commit('loginStart');
         axios__WEBPACK_IMPORTED_MODULE_0___default().get('/sanctum/csrf-cookie').then(function () {
-          axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/login", {
+          axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/v1/login", {
             email: credentials.username,
             password: credentials.password
           }).then(function (res) {
@@ -22995,7 +22995,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       if (state.user) {
         axios__WEBPACK_IMPORTED_MODULE_0___default()({
           method: 'get',
-          url: "/api/user/".concat(state.user.id),
+          url: "/api/v1/user/".concat(state.user.id),
           headers: {
             Accept: 'application/json',
             Authorization: "Bearer ".concat(state.accessToken)
@@ -23042,7 +23042,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           axios__WEBPACK_IMPORTED_MODULE_0___default().get('/sanctum/csrf-cookie').then(function () {
             axios__WEBPACK_IMPORTED_MODULE_0___default()({
               method: 'put',
-              url: "/api/user/".concat(state.user.id),
+              url: "/api/v1/user/".concat(state.user.id),
               data: _objectSpread({}, submittedData),
               headers: {
                 Accept: 'application/json',
@@ -23078,7 +23078,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         commit('fetchingStart');
         axios__WEBPACK_IMPORTED_MODULE_0___default().get('/sanctum/csrf-cookie').then(axios__WEBPACK_IMPORTED_MODULE_0___default()({
           method: 'put',
-          url: "/api/user/".concat(state.user.id, "/change-password"),
+          url: "/api/v1/user/".concat(state.user.id, "/change-password"),
           data: _objectSpread({}, credentials),
           headers: {
             Accept: 'application/json',
@@ -23156,7 +23156,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     signUp: function signUp(_ref, credentials) {
       var commit = _ref.commit;
       commit('registerStart');
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/register", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/v1/register", {
         nick: credentials.nick,
         first_name: credentials.first_name,
         last_name: credentials.last_name,

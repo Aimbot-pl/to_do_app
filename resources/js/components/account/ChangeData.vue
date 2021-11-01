@@ -159,7 +159,7 @@ export default {
 		const user = computed(() => store.getters.user);
 
 		const fetchUserData = () => store.dispatch('fetchUserData');
-		const saveChanges = () => store.dispatch('saveChanges');
+		const saveChanges = (datas) => store.dispatch('saveChanges', datas);
 
 		onMounted(() => {	
 			document.title = `Preferences`;
