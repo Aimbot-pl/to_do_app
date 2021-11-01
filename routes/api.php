@@ -18,9 +18,11 @@ Route::prefix('v1')->group(function(){
         Route::put('/user/{user}', [UserController::class, 'update']);
         Route::get('/user/{id}', [UserController::class, 'show']);
         Route::put('/user/{user}/change-password', [UserController::class, 'changePassword']);
+        Route::post('/logout', [UserController::class, 'logout']);
     });
 
     Route::post('/register', [UserController::class, 'register']);
     Route::post('/login', [UserController::class, 'login']);
+    Route::post('/refresh-token', [UserController::class, 'refreshToken']);
     // Route::apiResource('/tasks', TaskController::class);
 });

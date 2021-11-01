@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from './store'
+import Cookies from 'js-cookie';
 const notFound = { template: '<h1>Not found</h1>' }
 
 const routes = [
@@ -36,7 +37,7 @@ const routes = [
         beforeEnter: (to, from, next) => {
             store.dispatch('fetchUserData')
             store.dispatch('fetchAuth')
-            if (store.state.account.accessToken && store.state.account.user && to.params.user === store.state.account.user.nick) {
+            if (Cookies.get('accessToken') && JSON.stringify(Cookies.get('user')) && to.params.user === JSON.parse(Cookies.get('user')).nick) {
                 next()
             } else {
                 next({

@@ -1,7 +1,7 @@
 <template>
 	<form @submit.prevent="createAccount">
-		<h2 class="text-danger d-block" v-if="errors">{{ errors.message }}</h2>
-		<h2 v-else-if="message">{{ message }}</h2>
+		<h2 class="d-block text-success" v-if="response.message && response.status === 201">{{ response.message }}</h2>
+		<h2 class="text-danger d-block" v-else-if="response.message">{{ response.message }}</h2>
 		<div class="row g-3">
 			<div class="col">
 				<label class="form-label" for="first-name">First name</label>
@@ -16,9 +16,9 @@
 				/>
 				<div
 					class="invalid-feedback d-block"
-					v-if="errors && errors.first_name"
+					v-if="response.errors && response.errors.first_name"
 				>
-					<p v-for="error in errors.first_name" :key="error">
+					<p v-for="error in response.errors.first_name" :key="error">
 						{{ error }}
 					</p>
 				</div>
@@ -35,9 +35,9 @@
 				/>
 				<div
 					class="invalid-feedback d-block"
-					v-if="errors && errors.last_name"
+					v-if="response.errors && response.errors.last_name"
 				>
-					<p v-for="error in errors.last_name" :key="error">
+					<p v-for="error in response.errors.last_name" :key="error">
 						{{ error }}
 					</p>
 				</div>
@@ -52,8 +52,8 @@
 				id="nick"
 				class="form-control"
 			/>
-			<div class="invalid-feedback d-block" v-if="errors && errors.nick">
-				<p v-for="error in errors.nick" :key="error">
+			<div class="invalid-feedback d-block" v-if="response.errors && response.errors.nick">
+				<p v-for="error in response.errors.nick" :key="error">
 					{{ error }}
 				</p>
 			</div>
@@ -67,8 +67,8 @@
 				id="email"
 				class="form-control"
 			/>
-			<div class="invalid-feedback d-block" v-if="errors && errors.email">
-				<p v-for="error in errors.email" :key="error">
+			<div class="invalid-feedback d-block" v-if="response.errors && response.errors.email">
+				<p v-for="error in response.errors.email" :key="error">
 					{{ error }}
 				</p>
 			</div>
@@ -93,9 +93,9 @@
 			</div>
 			<div
 				class="invalid-feedback d-block"
-				v-if="errors && errors.password"
+				v-if="response.errors && response.errors.password"
 			>
-				<p v-for="error in errors.password" :key="error">
+				<p v-for="error in response.errors.password" :key="error">
 					{{ error }}
 				</p>
 			</div>
@@ -127,9 +127,9 @@
 			</div>
 			<div
 				class="invalid-feedback d-block"
-				v-if="errors && errors.password_confirmation"
+				v-if="response.errors && response.errors.password_confirmation"
 			>
-				<p v-for="error in errors.password_confirmation" :key="error">
+				<p v-for="error in response.errors.password_confirmation" :key="error">
 					{{ error }}
 				</p>
 			</div>
@@ -163,9 +163,9 @@
 			</div>
 			<div
 				class="invalid-feedback d-block"
-				v-if="errors && errors.gender"
+				v-if="response.errors && response.errors.gender"
 			>
-				<p v-for="error in errors.gender" :key="error">
+				<p v-for="error in response.errors.gender" :key="error">
 					{{ error }}
 				</p>
 			</div>
@@ -196,14 +196,67 @@ export default {
 			nameInput.value.focus();
 		});
 
-		const signUp = () => store.dispatch('signUp');
+		const signUp = (credentials) => store.dispatch('signUp', credentials);
 		const createAccount = () => {
 			isDisabled.value = true;
-			errors = null;
-			signUp(localUserData.value).then(() => isDisabled.value = false)
+			let letRegister = true;
+			clearErrors();
+			requiredFields.forEach(item => {
+				if (localUserData.value[item] == '') {
+					response.value.errors[item].push('Fill this field.');
+					letRegister = false;
+				}
+			})
+			if (letRegister) {
+				store.dispatch('signUp', localUserData.value)
+					.then((res) => 	response.value = {
+										message: res.data.message, 
+										status: res.status
+									}
+					)
+					.catch(err => {
+						response.value = {
+							errors: err.data.errors,
+							message: err.data.message,
+							status: err.status
+						};
+					});
+			} else {
+				response.value.message = 'Fill every field';
+			}
+
+			isDisabled.value = false;
 		}
 
+		const response = ref({});
+		const clearErrors = () => {
+			response.value = {
+				errors: {
+					first_name: [],
+					last_name: [],
+					nick: [],
+					email: [],
+					password: [],
+					password_confirmation: [],
+					gender: []
+				},
+				message: ''
+			};
+		}
+		clearErrors();
+		
+
 		const isDisabled = ref(false);
+		const requiredFields = [
+			'first_name', 
+			'nick',
+			'last_name',
+			'email',
+			'password',
+			'password_confirmation',
+			'gender'
+		];
+
 		const localUserData = ref({});
 		localUserData.value = {
 			first_name: "",
@@ -214,14 +267,13 @@ export default {
 			password_confirmation: "",
 			gender: "",
 		};
-		const errors = computed(() => store.getters.registerErrors);
 
 		return {
 			signUp,
 			nameInput,
 			createAccount,
 			isDisabled,
-			errors,
+			response,
 			localUserData,
 			...togglePassword
 		}
