@@ -28,7 +28,7 @@ export default {
         signUp({commit}, credentials) {
             commit('registerStart')
             axios
-                .post("/api/register", {
+                .post("/api/v1/register", {
                     nick: credentials.nick,
                     first_name: credentials.first_name,
                     last_name: credentials.last_name,

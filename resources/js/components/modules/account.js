@@ -87,7 +87,7 @@ export default {
         login({ commit, state }, credentials) {
             commit('loginStart')
             axios.get('/sanctum/csrf-cookie').then(() => {
-                axios.post("/api/login", {
+                axios.post("/api/v1/login", {
                     email: credentials.username,
                     password: credentials.password,
                 })
@@ -135,7 +135,7 @@ export default {
 
                 axios({
                     method: 'get',
-                    url: `/api/user/${state.user.id}`,
+                    url: `/api/v1/user/${state.user.id}`,
                     headers: {
                         Accept: 'application/json',
                         Authorization: `Bearer ${state.accessToken}`
@@ -172,7 +172,7 @@ export default {
                     axios.get('/sanctum/csrf-cookie').then(() => {
                         axios({
                             method: 'put',
-                            url: `/api/user/${state.user.id}`,
+                            url: `/api/v1/user/${state.user.id}`,
                             data: {
                                 ...submittedData
                             },
@@ -210,7 +210,7 @@ export default {
                 axios.get('/sanctum/csrf-cookie').then(
                     axios({
                         method: 'put',
-                        url: `/api/user/${state.user.id}/change-password`,
+                        url: `/api/v1/user/${state.user.id}/change-password`,
                         data: {
                             ...credentials
                         },

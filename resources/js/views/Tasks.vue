@@ -65,7 +65,7 @@ export default {
 		this.loadTasks();
 	},
 	methods: {
-		async loadTasks(site = "/api/tasks") {
+		async loadTasks(site = "/api/v1/tasks") {
 			if (site) {
 				this.isLoaded = false;
 				const res = await axios
@@ -81,7 +81,7 @@ export default {
 		},
 		async addTask(data) {
 			const res = await axios
-				.post("/api/tasks", {
+				.post("/api/v1/tasks", {
 					name: data.name,
 					when: data.when,
 					reminder: data.reminder,
@@ -98,7 +98,7 @@ export default {
 		},
 		async deleteTask(id) {
 			const res = await axios
-				.delete("/api/tasks/" + id)
+				.delete("/api/v1/tasks/" + id)
 				.then((res) => {
 					this.loadTasks();
 				})
@@ -109,7 +109,7 @@ export default {
 		},
 		async updateTask(data) {
 			const res = await axios
-				.put("/api/tasks/" + data.id, {
+				.put("/api/v1/tasks/" + data.id, {
 					name: data.name,
 					when: data.when,
 					reminder: data.reminder,
