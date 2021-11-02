@@ -33,27 +33,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();
     var username = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_3__.ref)(null);
     var password = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_3__.ref)(null);
-    var loginErrors = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_3__.computed)(function () {
-      return store.getters.loginErrors;
-    });
+    var loginErrors = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_3__.ref)(null);
     var userErrors = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_3__.computed)(function () {
       return store.getters.userErrors;
     });
 
     var login = function login(credentials) {
       store.dispatch('login', credentials).then(function (user) {
-        if (route.query.redirect) {
-          router.replace(route.query.redirect);
-        } else {
-          router.replace({
-            name: "profile",
-            params: {
-              user: user.nick
-            }
-          });
-        }
+        console.log(user); // if (route.query.redirect) {
+        // 		router.replace(route.query.redirect);
+        // } else {
+        // 	router.replace({
+        // 		name: "profile",
+        // 		params: { user: user.nick }
+        // 	});
+        // }
       })["catch"](function (err) {
-        alert(err.data.message);
+        console.log('login errors in login component', err);
+        loginErrors.value = err.data.message; // alert(err.data.message);
       });
     };
 

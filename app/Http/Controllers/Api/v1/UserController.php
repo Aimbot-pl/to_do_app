@@ -70,8 +70,8 @@ class UserController extends Controller
 
         $user->tokens()->delete();
         $response = [
-            'user' => $user,
-            'token' => $user->createToken('myapptoken')->plainTextToken,
+            'user' => new UserResource($user),
+            'accessToken' => $user->createToken('myapptoken')->plainTextToken,
             'refreshToken' => $refreshToken
         ];
         return response($response, 201);
@@ -161,33 +161,34 @@ class UserController extends Controller
     }
 
     public function refreshToken(Request $request) {
-        if (!$request['refresh_token']) {
+        if (!$request['refreshToken']) {
             return response(['message' => 'Session expired. Log in again.'], 403);
         }
-        $user = User::find($request['user_id']);
-        if ($request['access_token']) {
-            $match = false;
-            foreach ($user->tokens as $token) {
-                if ($token->plainTextToken == $request['accessToken']) {
-                    $match = true;
-                }
-            }
-            if ($match) {
-                return response([
-                    'access_token' => $request['access_token'],
-                    'refresh_token' => $request['refresh_token'],
-                    'user' => new UserResource($user)
-                ], 200);
-            }
-        } else {
+        $user = User::find($request['userId']);
+        // TODO For now, I don't use this functionality, cuz I can't verify tokens. Fix that later!
+        // if ($request['accessToken']) {
+        //     $match = false;
+        //     foreach ($user->tokens as $token) {
+        //         if ($token->plainTextToken == $request['accessToken']) {
+        //             $match = true;
+        //         }
+        //     }
+        //     if ($match) {
+        //         return response([
+        //             'accessToken' => $request['accessToken'],
+        //             'refreshToken' => $request['refreshToken'],
+        //             'user' => new UserResource($user)
+        //         ], 200);
+        //     }
+        // } else {
             $user->tokens()->delete();
             return response([
-                'access_token' => $user->createToken('myapptoken')->plainTextToken,
-                'refresh_token' => $request['refresh_token'],
+                'accessToken' => $user->createToken('myapptoken')->plainTextToken,
+                'refreshToken' => $request['refreshToken'],
                 'user' => new UserResource($user)
-            ]);
-        }
-        return response(['message' => 'Credentials are invalid. Log in again.'], 403);
+            ], 200);
+        // }
+        return response(['message' => 'Credentials are invalid. Log in again.'], 401);
     }
 
 }

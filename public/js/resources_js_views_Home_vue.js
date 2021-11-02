@@ -74,27 +74,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();
     var username = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_3__.ref)(null);
     var password = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_3__.ref)(null);
-    var loginErrors = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_3__.computed)(function () {
-      return store.getters.loginErrors;
-    });
+    var loginErrors = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_3__.ref)(null);
     var userErrors = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_3__.computed)(function () {
       return store.getters.userErrors;
     });
 
     var login = function login(credentials) {
       store.dispatch('login', credentials).then(function (user) {
-        if (route.query.redirect) {
-          router.replace(route.query.redirect);
-        } else {
-          router.replace({
-            name: "profile",
-            params: {
-              user: user.nick
-            }
-          });
-        }
+        console.log(user); // if (route.query.redirect) {
+        // 		router.replace(route.query.redirect);
+        // } else {
+        // 	router.replace({
+        // 		name: "profile",
+        // 		params: { user: user.nick }
+        // 	});
+        // }
       })["catch"](function (err) {
-        alert(err.data.message);
+        console.log('login errors in login component', err);
+        loginErrors.value = err.data.message; // alert(err.data.message);
       });
     };
 
@@ -269,8 +266,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       showModal: showModal,
       toggleModal: toggleModal,
-      userId: (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_4__.computed)(function () {
-        return store.getters.userId;
+      user: (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_4__.computed)(function () {
+        return store.getters.user;
       })
     };
   }
@@ -862,7 +859,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   var _component_Register = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Register");
 
-  return $setup.userId ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Feed)])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [_hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_LoginComp), _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  return $setup.user ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Feed)])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [_hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_LoginComp), _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "btn btn-success px-5",
     "data-bs-toggle": "modal",
     "data-bs-target": "#register",

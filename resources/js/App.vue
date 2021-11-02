@@ -9,7 +9,7 @@
 		"
 	>
 		<div class="container-fluid px-2">
-			<router-link class="navbar-brand" :to="{ path: '/' }"
+			<router-link class="navbar-brand" :to="{ name: 'home' }"
 				>Home</router-link
 			>
 			<button
@@ -82,8 +82,11 @@ export default {
 		const store = useStore();
 
 		const logout = () => store.dispatch('logout');
+		const fetchUser = () => store.dispatch('fetchUser');
 		const fetchAuth = () => store.dispatch('fetchAuth');
-		fetchAuth();
+		fetchUser().then(() => {
+			fetchAuth();
+		})
 
 		return {
 			fetchAuth,

@@ -1,5 +1,5 @@
 <template>
-	<div v-if="userId">
+	<div v-if="user">
 		<Feed/>
 	</div>
 	<div v-else class="row justify-content-around mt-5">
@@ -84,7 +84,7 @@ import { computed, ref } from '@vue/reactivity';
 			return {
 				showModal,
 				toggleModal,
-				userId: computed(() => store.getters.userId)
+				user: computed(() => store.getters.user)
 			}
 		},
 	};

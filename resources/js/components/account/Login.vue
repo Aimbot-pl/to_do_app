@@ -56,22 +56,25 @@ export default {
 		const username = ref(null);
 		const password = ref(null);
 
-		const loginErrors = computed(() => store.getters.loginErrors);
+		const loginErrors = ref(null);
 		const userErrors = computed(() => store.getters.userErrors);
 		const login = (credentials) => {
 			store.dispatch('login', credentials)
 				.then((user) => {
-					if (route.query.redirect) {
-							router.replace(route.query.redirect);
-					} else {
-						router.replace({
-							name: "profile",
-							params: { user: user.nick }
-						});
-					}
+					console.log(user);
+					// if (route.query.redirect) {
+					// 		router.replace(route.query.redirect);
+					// } else {
+					// 	router.replace({
+					// 		name: "profile",
+					// 		params: { user: user.nick }
+					// 	});
+					// }
 				})
 				.catch((err) => {
-					alert(err.data.message);
+					console.log('login errors in login component', err);
+					loginErrors.value = err.data.message;
+					// alert(err.data.message);
 				});
 		}
 

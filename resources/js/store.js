@@ -1,12 +1,10 @@
-import { createStore } from 'vuex'
-import account from './components/modules/account'
-import register from './components/modules/register'
+import { createStore } from 'vuex';
+import account from './components/modules/storeAccount';
 
 const store = createStore({
     modules: {
-        account,
-        register,
+        account
     },
-})
+});
 
-export default store
+export default store;
