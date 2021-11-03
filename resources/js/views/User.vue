@@ -41,16 +41,11 @@ export default {
 	name: "User component",
 	setup() {
 		const store = useStore();
-		const fetchData = () => store.dispatch('fetchUserData');
-		fetchData();
 		const user = computed(() => store.getters.user);
-		const errors = computed(() => store.getters.userErrors);
 		document.title = user.value.nick;
 		
 		return {
-			fetchData,
-			user, 
-			errors
+			user
 		}
 	}
 };

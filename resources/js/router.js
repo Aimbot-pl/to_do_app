@@ -35,16 +35,28 @@ const routes = [
         name: 'user',
         component: () => import('./views/User.vue'),
         beforeEnter: (to, from, next) => {
-            store.dispatch('fetchUserData')
+            store.dispatch('fetchUser');
             store.dispatch('fetchAuth')
-            if (Cookies.get('accessToken') && JSON.stringify(Cookies.get('user')) && to.params.user === JSON.parse(Cookies.get('user')).nick) {
-                next()
-            } else {
+            .then(res => {
+                if (Cookies.get('accessToken') && JSON.parse(Cookies.get('user')) && to.params.user == JSON.parse(Cookies.get('user')).nick) {
+                    next();
+                } else {
+                    next({
+                        name: 'login',
+                        query: {
+                            redirect: to.fullPath
+                        }
+                    })
+                }
+            })
+            .catch(() => {
                 next({
-                    path: '/login',
-                    query: { redirect: to.fullPath }
+                    name: 'login',
+                    query: {
+                        redirect: to.fullPath
+                    }
                 })
-            }
+            })
         },
         children: [
             {

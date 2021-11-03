@@ -19,23 +19,12 @@ __webpack_require__.r(__webpack_exports__);
   name: "User component",
   setup: function setup() {
     var store = (0,vuex__WEBPACK_IMPORTED_MODULE_0__.useStore)();
-
-    var fetchData = function fetchData() {
-      return store.dispatch('fetchUserData');
-    };
-
-    fetchData();
     var user = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_1__.computed)(function () {
       return store.getters.user;
     });
-    var errors = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_1__.computed)(function () {
-      return store.getters.userErrors;
-    });
     document.title = user.value.nick;
     return {
-      fetchData: fetchData,
-      user: user,
-      errors: errors
+      user: user
     };
   }
 });

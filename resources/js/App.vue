@@ -84,9 +84,18 @@ export default {
 		const logout = () => store.dispatch('logout');
 		const fetchUser = () => store.dispatch('fetchUser');
 		const fetchAuth = () => store.dispatch('fetchAuth');
-		fetchUser().then(() => {
-			fetchAuth();
-		})
+		fetchUser()
+		.then(() => {
+			fetchAuth()
+			.then((res) => {
+				router.replace({
+					name: 'user',
+					params: {
+						user: res.data.user.nick
+					}
+				});
+			});
+		});
 
 		return {
 			fetchAuth,

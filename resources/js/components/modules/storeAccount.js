@@ -12,12 +12,15 @@ export default {
         }
     },
     getters: {
+        user(state)
+        {
+            return state.user;
+        }
     },
     mutations: {
-        // Login user
         updateUser(state, data) 
         {
-            if (typeof data.user != 'undefined'){
+            if (typeof data.user != 'undefined') {
             if (typeof data.user === 'object') {
                 state.user = data.user;
             } else if (typeof data.user === 'string') {
@@ -42,7 +45,8 @@ export default {
         }
     },
     actions: {
-        fetchUser({commit}) {
+        fetchUser({commit}) 
+        {
             return new Promise(resolve => {
                 commit('updateUser', {
                     user: Cookies.get('user')
@@ -50,13 +54,14 @@ export default {
                 resolve();
             });
         },
-        fetchAuth({commit}) {
+        async fetchAuth({state, commit}) 
+        {
             return new Promise((resolve, reject) => {
                 commit('startLogin');
                 axios.post('/api/v1/refresh-token', {
                     accessToken: Cookies.get('accessToken'),
                     refreshToken: Cookies.get('refreshToken'),
-                    userId: JSON.parse(Cookies.get('user')).id
+                    userId: state.user && state.user.id ? state.user.id : null
                 })
                 .then((res) => {
                     commit('stopLogin', res, null);
@@ -73,7 +78,8 @@ export default {
                 });
             });
         },
-        login({commit}, credentials) {
+        login({commit}, credentials) 
+        {
             return new Promise((resolve, reject) => {
                 axios.get('/api/v1/csrf-cookie')
                 .then(() => {
@@ -102,6 +108,27 @@ export default {
                     commit('stopLogin', null, err.response);
                     reject(err.response);
                 });
+            });
+        },
+        logout({commit, dispatch})
+        {
+            return new Promise((resolve, reject) => {
+                dispatch('fetchAuth').then((res) => {
+                    commit('startLogin');
+                    axios.post('/api/v1/logout', {}, {
+                        headers: {
+                            Authorization: `Bearer ${res.data.accessToken}`
+                        }
+                    })
+                    .then(() => {
+                        commit('stopLogin', null, null);
+                        commit('updateUser', null);
+                        Cookies.remove('accessToken');
+                        Cookies.remove('refreshToken');
+                        Cookies.remove('user');
+                        router.replace({name: 'home'});
+                    })
+                })
             });
         }
     }
