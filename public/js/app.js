@@ -22864,6 +22864,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! js-cookie */ "./node_modules/js-cookie/dist/js.cookie.mjs");
 /* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../router */ "./resources/js/router.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 
@@ -22881,6 +22887,12 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   getters: {
     user: function user(state) {
       return state.user;
+    },
+    errorsData: function errorsData(state) {
+      return state.errors && state.errors.hasOwnProperty('data') ? state.errors.data : null;
+    },
+    responseData: function responseData(state) {
+      return state.response && state.response.hasOwnProperty('data') ? state.response.data : null;
     }
   },
   mutations: {
@@ -22912,10 +22924,10 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     startLogin: function startLogin(state) {
       state.signingIn = true;
     },
-    stopLogin: function stopLogin(state, response, errors) {
+    stopLogin: function stopLogin(state, res) {
       state.signingIn = false;
-      state.response = response;
-      state.errors = errors;
+      state.response = res && res.hasOwnProperty('response') ? res.response : null;
+      state.errors = res && res.hasOwnProperty('errors') ? res.errors : null;
     }
   },
   actions: {
@@ -22965,14 +22977,23 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
               accessToken: res.data.accessToken,
               user: res.data.user
             });
-            commit('stopLogin', res, null);
+            commit('stopLogin', {
+              response: res,
+              errors: null
+            });
             resolve(res);
           })["catch"](function (err) {
-            commit('stopLogin', null, err.response);
+            commit('stopLogin', {
+              response: null,
+              errors: err.response
+            });
             reject(err.response);
           });
         })["catch"](function (err) {
-          commit('stopLogin', null, err.response);
+          commit('stopLogin', {
+            response: null,
+            errors: err.response
+          });
           reject(err.response);
         });
       });
@@ -22998,6 +23019,40 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
             });
           });
         });
+      });
+    },
+    saveChanges: function saveChanges(_ref6, currentUserData) {
+      var state = _ref6.state,
+          commit = _ref6.commit,
+          dispatch = _ref6.dispatch;
+      return new Promise(function (resolve, reject) {
+        if (JSON.stringify(_objectSpread(_objectSpread({}, currentUserData), {}, {
+          id: state.user.id
+        })) === JSON.stringify(state.user)) {
+          commit('stopLogin', {
+            response: null,
+            errors: {
+              data: {
+                message: 'Your data are the same.'
+              }
+            }
+          });
+          reject({
+            message: 'Your data are the same.'
+          });
+        } else {
+          commit('stopLogin', {
+            response: {
+              data: {
+                message: 'Update successfull'
+              }
+            },
+            errors: null
+          });
+          resolve({
+            message: 'Update successfull'
+          });
+        }
       });
     }
   }
@@ -23035,12 +23090,6 @@ var routes = [{
   alias: '/home',
   component: function component() {
     return __webpack_require__.e(/*! import() */ "resources_js_views_Home_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Home.vue */ "./resources/js/views/Home.vue"));
-  }
-}, {
-  path: '/tasks',
-  name: 'tasks',
-  component: function component() {
-    return __webpack_require__.e(/*! import() */ "resources_js_views_Tasks_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Tasks.vue */ "./resources/js/views/Tasks.vue"));
   }
 }, {
   path: '/login',
@@ -23113,17 +23162,6 @@ var routes = [{
   name: 'forgotPassword',
   component: {
     template: '<div>link</div>'
-  }
-}, {
-  path: '/test-second',
-  name: 'testSecond',
-  component: function component() {
-    return __webpack_require__.e(/*! import() */ "resources_js_components_TestSecond_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/TestSecond.vue */ "./resources/js/components/TestSecond.vue"));
-  }
-}, {
-  path: '/tasks',
-  component: function component() {
-    return __webpack_require__.e(/*! import() */ "resources_js_views_Tasks_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Tasks.vue */ "./resources/js/views/Tasks.vue"));
   }
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__.createRouter({
@@ -51579,7 +51617,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_views_Home_vue":1,"resources_js_views_Tasks_vue":1,"resources_js_views_Login_vue":1,"resources_js_views_Register_vue":1,"resources_js_views_User_vue":1,"resources_js_components_account_Profile_vue":1,"resources_js_components_account_Preferences_vue":1,"resources_js_components_account_ChangeData_vue":1,"resources_js_components_account_ChangePassword_vue":1,"resources_js_components_TestSecond_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_views_Home_vue":1,"resources_js_views_Login_vue":1,"resources_js_views_Register_vue":1,"resources_js_views_User_vue":1,"resources_js_components_account_Profile_vue":1,"resources_js_components_account_Preferences_vue":1,"resources_js_components_account_ChangeData_vue":1,"resources_js_components_account_ChangePassword_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

@@ -797,13 +797,13 @@ var _hoisted_2 = {
 };
 
 var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-  "class": "col-12 col-md-6 my-auto"
+  "class": "col-11 col-md-6 mb-4"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", null, "Laravel application"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, " Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae ad quas delectus eaque, molestias optio placeat possimus nostrum magnam fuga modi recusandae. Quisquam, ratione facilis fugit sit magni alias similique. ")], -1
 /* HOISTED */
 );
 
 var _hoisted_4 = {
-  "class": "col-12 col-md-6 col-lg-4 border border-2 rounded-3 px-5 py-3"
+  "class": "col-11 col-md-6 col-lg-4 border border-2 rounded-3 px-5 py-3"
 };
 
 var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("hr", null, null, -1

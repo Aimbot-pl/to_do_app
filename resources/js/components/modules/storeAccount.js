@@ -15,6 +15,14 @@ export default {
         user(state)
         {
             return state.user;
+        },
+        errorsData(state)
+        {
+            return state.errors && state.errors.hasOwnProperty('data') ? state.errors.data : null;
+        },
+        responseData(state)
+        {
+            return state.response && state.response.hasOwnProperty('data') ? state.response.data : null;
         }
     },
     mutations: {
@@ -42,11 +50,11 @@ export default {
         {
             state.signingIn = true;
         },
-        stopLogin(state, response, errors)
+        stopLogin(state, res)
         {
             state.signingIn = false;
-            state.response = response;
-            state.errors = errors;
+            state.response = res && res.hasOwnProperty('response') ? res.response : null;
+            state.errors = res && res.hasOwnProperty('errors') ? res.errors : null;
         }
     },
     actions: {
@@ -101,16 +109,16 @@ export default {
                             accessToken: res.data.accessToken,
                             user: res.data.user
                         });
-                        commit('stopLogin',res, null);
+                        commit('stopLogin', {response: res, errors: null});
                         resolve(res);
                     })
                     .catch(err => {
-                        commit('stopLogin', null, err.response);
+                        commit('stopLogin', {response: null, errors: err.response});
                         reject(err.response);
                     });
                 })
                 .catch(err => {
-                    commit('stopLogin', null, err.response);
+                    commit('stopLogin', {response: null, errors: err.response});
                     reject(err.response);
                 });
             });
@@ -134,6 +142,18 @@ export default {
                         router.replace({name: 'home'});
                     })
                 })
+            });
+        },
+        saveChanges({state, commit, dispatch}, currentUserData) 
+        {
+            return new Promise((resolve, reject) => {
+                if (JSON.stringify({...currentUserData, id: state.user.id}) === JSON.stringify(state.user)) {
+                    commit('stopLogin', {response: null, errors: { data: { message: 'Your data are the same.'}}} );
+                    reject({message: 'Your data are the same.'});
+                } else {
+                    commit('stopLogin', {response: {data: {message: 'Update successfull'}}, errors: null});
+                    resolve({message: 'Update successfull'});
+                }
             });
         }
     }

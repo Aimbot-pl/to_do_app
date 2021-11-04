@@ -16,11 +16,6 @@ const routes = [
         component: () => import('./views/Home.vue'),
     },
     {
-        path: '/tasks',
-        name: 'tasks',
-        component: () => import('./views/Tasks.vue'),
-    },
-    {
         path: '/login',
         name: 'login',
         component: () => import('./views/Login.vue'),
@@ -89,15 +84,6 @@ const routes = [
         name: 'forgotPassword',
         component: { template: '<div>link</div>' },
     },
-    {
-        path: '/test-second',
-        name: 'testSecond',
-        component: () => import('./components/TestSecond.vue'),
-    },
-    {
-        path: '/tasks',
-        component: () => import('./views/Tasks.vue')
-    }
 ];
 
 const router = new createRouter({

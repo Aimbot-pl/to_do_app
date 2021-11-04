@@ -3,7 +3,7 @@
 		<Feed/>
 	</div>
 	<div v-else class="row justify-content-around mt-5">
-		<div class="col-12 col-md-6 my-auto">
+		<div class="col-11 col-md-6 mb-4">
 			<h1>Laravel application</h1>
 			<p>
 				Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae
@@ -12,7 +12,7 @@
 				magni alias similique.
 			</p>
 		</div>
-		<div class="col-12 col-md-6 col-lg-4 border border-2 rounded-3 px-5 py-3">
+		<div class="col-11 col-md-6 col-lg-4 border border-2 rounded-3 px-5 py-3">
 			<LoginComp />
 			<hr />
 

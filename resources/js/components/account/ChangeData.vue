@@ -1,10 +1,10 @@
 <template>
 	<h1 class="text-center my-3">Your data</h1>
 	<form class="mx-auto px-3" @submit.prevent="saveChanges(localUserData)">
-		<h2 class="text-danger d-block" v-if="localErrors">
-			{{ localErrors.message }}
-		</h2>
-		<h2 v-else-if="message">{{ message }}</h2>
+		<h3 class="text-danger d-block" v-if="errorss">
+			{{ errorss.message }}
+		</h3>
+		<h3 class="text-success d-block" v-else-if="responsee && responsee.message">{{ responsee.message }}</h3>
 		<div class="row g-3">
 			<div class="col">
 				<label class="form-label" for="first-name">First name</label>
@@ -19,9 +19,9 @@
 				/>
 				<div
 					class="invalid-feedback d-block"
-					v-if="localErrors && localErrors.first_name"
+					v-if="errors && errors.first_name"
 				>
-					<p v-for="error in localErrors.first_name" :key="error">
+					<p v-for="error in errors.first_name" :key="error">
 						{{ error }}
 					</p>
 				</div>
@@ -38,9 +38,9 @@
 				/>
 				<div
 					class="invalid-feedback d-block"
-					v-if="localErrors && localErrors.last_name"
+					v-if="errors && errors.last_name"
 				>
-					<p v-for="error in localErrors.last_name" :key="error">
+					<p v-for="error in errors.last_name" :key="error">
 						{{ error }}
 					</p>
 				</div>
@@ -57,9 +57,9 @@
 			/>
 			<div
 				class="invalid-feedback d-block"
-				v-if="localErrors && localErrors.nick"
+				v-if="errors && errors.nick"
 			>
-				<p v-for="error in localErrors.nick" :key="error">
+				<p v-for="error in errors.nick" :key="error">
 					{{ error }}
 				</p>
 			</div>
@@ -75,9 +75,9 @@
 			/>
 			<div
 				class="invalid-feedback d-block"
-				v-if="localErrors && localErrors.email"
+				v-if="errors && errors.email"
 			>
-				<p v-for="error in localErrors.email" :key="error">
+				<p v-for="error in errors.email" :key="error">
 					{{ error }}
 				</p>
 			</div>
@@ -111,22 +111,25 @@
 			</div>
 			<div
 				class="invalid-feedback d-block"
-				v-if="localErrors && localErrors.gender"
+				v-if="errors && errors.gender"
 			>
-				<p v-for="error in localErrors.gender" :key="error">
+				<p v-for="error in errors.gender" :key="error">
 					{{ error }}
 				</p>
 			</div>
 		</div>
 		<div class="text-center mt-3">
-			<input type="submit" class="btn btn-success" value="Save changes" />
+			<button id="submit-button" type="submit" class="btn btn-success disabled">
+				<div id="spinner-button" class=""></div>
+				<span id="submit-text">Save changes</span>	
+			</button>
 		</div>
 	</form>
 </template>
 
 <script>
 import { computed, ref } from '@vue/reactivity';
-import { mapActions, mapGetters, useStore } from "vuex";
+import { useStore } from "vuex";
 import { onMounted } from '@vue/runtime-core';
 import { useRoute, useRouter } from 'vue-router';
 export default {
@@ -146,29 +149,75 @@ export default {
 		};
 		
 		const showModal = ref(false);
-		const message = ref('');
-		const localErrors = ref({});
+		const response = computed(() => store.getters.responseData);
+		const errors = computed(() => store.getters.errorsData);
+
+		const errorss = ref({});
+		const responsee = ref({});
+
 
 		const closeModal = () => {
 			showModal.value = false;
 			message.value = '';
 		}
 
-		const userId = computed(() => store.getters.userId); 
-		const errors = computed(() => store.getters.userErrors);
 		const user = computed(() => store.getters.user);
 
-		const fetchUserData = () => store.dispatch('fetchUserData');
-		const saveChanges = (datas) => store.dispatch('saveChanges', datas);
+		const saveChanges = (newUserData) => {
+			let letGo = false;
+			responsee.value = null;
+			errorss.value = null;
+			
+
+			if (JSON.stringify({...newUserData, id: user.value.id}) === JSON.stringify(user.value)) {
+				letGo = false;
+			} else {
+				letGo = true;
+			}
+
+			if (letGo) {
+			document.querySelector('#spinner-button').classList.add('spinner-border', 'spinner-border-sm');
+			document.querySelector('#submit-button').classList.add('disabled');
+			document.querySelector('#submit-text').textContent = 'Loading';let i = 0;
+			setInterval(() => {
+				if (i >= 3 || errorss.value || responsee.value) {
+					clearInterval();
+				} else {
+					i++;
+					document.querySelector('#submit-text').textContent += '.';
+				}
+			}, 400);
+				setTimeout(() => {
+					store.dispatch('saveChanges', newUserData)
+					.then((res) => {
+						responsee.value = {
+							message: res.message
+						};
+						errorss.value = null;
+					})
+					.catch((err) => {
+						errorss.value = {
+							message: err.message
+						};
+						responsee.value = null;
+					})
+					.finally(() => {
+						clearInterval();
+						document.querySelector('#spinner-button').classList.remove('spinner-border', 'spinner-border-sm');
+						document.querySelector('#submit-button').classList.remove('disabled');
+						document.querySelector('#submit-text').textContent = 'Save changes';
+					});
+				}, 2000);
+			}
+			
+		};
 
 		onMounted(() => {	
 			document.title = `Preferences`;
-			if (user.value) {
+			if (typeof user.value == 'object') {
 				localUserData.value = { ...user.value };
-			} else if (errors.value) {
-				localErrors.value = errors.value;
-			}
-			if (!user.value) {
+			} 
+			if (typeof user.value != 'object') {
 				router.replace({
 					name: "user",
 					query: { redirect: route.fullPath },
@@ -180,13 +229,12 @@ export default {
 		return {
 			localUserData,
 			showModal,
-			message,
-			localErrors,
+			responsee,
+			errorss,
+			errors: null,
+			response: null,
 			closeModal,
-			userId,
-			errors,
 			user,
-			fetchUserData,
 			saveChanges
 		}
 
