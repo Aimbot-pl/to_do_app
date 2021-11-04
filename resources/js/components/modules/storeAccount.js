@@ -20,12 +20,17 @@ export default {
     mutations: {
         updateUser(state, data) 
         {
-            if (typeof data.user != 'undefined') {
-            if (typeof data.user === 'object') {
-                state.user = data.user;
-            } else if (typeof data.user === 'string') {
-                state.user = JSON.parse(data.user);
-            }}
+            if (data == null) {
+                state.user = null;
+            } else {
+                if (typeof data.user != 'undefined') {
+                    if (typeof data.user === 'object') {
+                        state.user = data.user;
+                    } else if (typeof data.user === 'string') {
+                        state.user = JSON.parse(data.user);
+                    }
+                }
+            }
         },
         updateAuth({state}, auth) 
         {
@@ -54,7 +59,7 @@ export default {
                 resolve();
             });
         },
-        async fetchAuth({state, commit}) 
+        fetchAuth({state, commit}) 
         {
             return new Promise((resolve, reject) => {
                 commit('startLogin');

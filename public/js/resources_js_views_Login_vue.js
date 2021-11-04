@@ -39,23 +39,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     });
 
     var login = function login(credentials) {
-      store.dispatch('login', credentials).then(function (user) {
-        console.log(user);
-
+      store.dispatch('login', credentials).then(function (res) {
         if (route.query.redirect) {
           router.replace(route.query.redirect);
         } else {
           router.replace({
             name: "profile",
             params: {
-              user: user.nick
+              user: res.data.user.nick
             }
           });
         }
       })["catch"](function (err) {
-        console.log('login errors in login component', err.response);
-        loginErrors.value = err.response.data.message;
-        alert(err.response.data.message);
+        console.log('login errors in login component', err); // loginErrors.value = err.response
       });
     };
 

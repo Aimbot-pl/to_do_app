@@ -60,21 +60,19 @@ export default {
 		const userErrors = computed(() => store.getters.userErrors);
 		const login = (credentials) => {
 			store.dispatch('login', credentials)
-				.then((user) => {
-					console.log(user);
+				.then((res) => {
 					if (route.query.redirect) {
-							router.replace(route.query.redirect);
+						router.replace(route.query.redirect);
 					} else {
 						router.replace({
 							name: "profile",
-							params: { user: user.nick }
+							params: { user: res.data.user.nick }
 						});
 					}
 				})
 				.catch((err) => {
-					console.log('login errors in login component', err.response);
-					loginErrors.value = err.response.data.message;
-					alert(err.response.data.message);
+					console.log('login errors in login component', err);
+					// loginErrors.value = err.response
 				});
 		}
 

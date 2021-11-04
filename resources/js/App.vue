@@ -76,10 +76,12 @@
 <script>
 import { computed } from '@vue/reactivity';
 import { useStore } from "vuex";
+import { useRouter } from 'vue-router';
 export default {
 	name: "App",
 	setup() {
 		const store = useStore();
+		const router = useRouter();
 
 		const logout = () => store.dispatch('logout');
 		const fetchUser = () => store.dispatch('fetchUser');

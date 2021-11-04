@@ -6,29 +6,17 @@
 </template>
 
 <script>
-import { mapActions, mapGetters} from "vuex";
+import { computed, ref } from '@vue/reactivity';
+import { mapActions, mapGetters, useStore} from "vuex";
+import { onMounted } from '@vue/runtime-core';
 export default {
 	name: "Feed",
-	data() {
+	setup() {
+		const store = useStore();
+		const user = computed(() => store.getters.user);
 		return {
-			user: null
+			user
 		}
-	},
-	created() {
-		this.fetchDatas()
-	},
-	mounted() {
-		this.user = this.userData
-	},
-	computed: {
-		...mapGetters({
-			userData: 'user'
-		}),
-	},
-	methods: {
-		...mapActions({
-			fetchDatas: 'fetchUserData'
-		})
 	}
 };
 </script>

@@ -11,33 +11,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _vue_reactivity__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @vue/reactivity */ "./node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js");
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Feed",
-  data: function data() {
+  setup: function setup() {
+    var store = (0,vuex__WEBPACK_IMPORTED_MODULE_0__.useStore)();
+    var user = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_1__.computed)(function () {
+      return store.getters.user;
+    });
     return {
-      user: null
+      user: user
     };
-  },
-  created: function created() {
-    this.fetchDatas();
-  },
-  mounted: function mounted() {
-    this.user = this.userData;
-  },
-  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)({
-    userData: 'user'
-  })),
-  methods: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)({
-    fetchDatas: 'fetchUserData'
-  }))
+  }
 });
 
 /***/ }),
@@ -80,23 +69,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     });
 
     var login = function login(credentials) {
-      store.dispatch('login', credentials).then(function (user) {
-        console.log(user);
-
+      store.dispatch('login', credentials).then(function (res) {
         if (route.query.redirect) {
           router.replace(route.query.redirect);
         } else {
           router.replace({
             name: "profile",
             params: {
-              user: user.nick
+              user: res.data.user.nick
             }
           });
         }
       })["catch"](function (err) {
-        console.log('login errors in login component', err.response);
-        loginErrors.value = err.response.data.message;
-        alert(err.response.data.message);
+        console.log('login errors in login component', err); // loginErrors.value = err.response
       });
     };
 
@@ -301,13 +286,13 @@ var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNod
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
-  return $data.user ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", null, "Hello " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.user.nick), 1
+  return $setup.user ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", null, "Hello " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.user.nick), 1
   /* TEXT */
   ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
     to: {
       name: 'user',
       params: {
-        user: $data.user.nick
+        user: $setup.user.nick
       }
     }
   }, {
