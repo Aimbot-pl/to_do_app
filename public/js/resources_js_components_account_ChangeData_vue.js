@@ -69,6 +69,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         id: user.value.id
       })) === JSON.stringify(user.value)) {
         letGo = false;
+        errorss.value = {
+          data: {
+            message: 'Your data are the same.'
+          }
+        };
       } else {
         letGo = true;
       }
@@ -86,24 +91,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             document.querySelector('#submit-text').textContent += '.';
           }
         }, 400);
-        setTimeout(function () {
-          store.dispatch('saveChanges', newUserData).then(function (res) {
-            responsee.value = {
-              message: res.message
-            };
-            errorss.value = null;
-          })["catch"](function (err) {
-            errorss.value = {
-              message: err.message
-            };
-            responsee.value = null;
-          })["finally"](function () {
-            clearInterval();
-            document.querySelector('#spinner-button').classList.remove('spinner-border', 'spinner-border-sm');
-            document.querySelector('#submit-button').classList.remove('disabled');
-            document.querySelector('#submit-text').textContent = 'Save changes';
-          });
-        }, 2000);
+        store.dispatch('saveChanges', newUserData).then(function (res) {
+          responsee.value = res.data;
+          errorss.value = null;
+          localUserData.value = {
+            first_name: res.data.user.first_name,
+            nick: res.data.user.nick,
+            last_name: res.data.user.last_name,
+            email: res.data.user.email,
+            gender: res.data.user.gender
+          };
+        })["catch"](function (err) {
+          errorss.value = {
+            message: err.message
+          };
+          responsee.value = null;
+        })["finally"](function () {
+          clearInterval();
+          document.querySelector('#spinner-button').classList.remove('spinner-border', 'spinner-border-sm');
+          document.querySelector('#submit-button').classList.remove('disabled');
+          document.querySelector('#submit-text').textContent = 'Save changes';
+        });
       }
     };
 
@@ -282,7 +290,7 @@ var _hoisted_26 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
   id: "submit-button",
   type: "submit",
-  "class": "btn btn-success disabled"
+  "class": "btn btn-success"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   id: "spinner-button",
   "class": ""

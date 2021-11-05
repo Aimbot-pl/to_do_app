@@ -61,7 +61,7 @@ const routes = [
             },
             {
                 path: 'preferences',
-                name: 'settings',
+                name: 'preferences',
                 component: () => import('./components/account/Preferences.vue'),
                 children: [
                     {

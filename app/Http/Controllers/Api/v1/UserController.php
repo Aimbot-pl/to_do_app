@@ -107,7 +107,10 @@ class UserController extends Controller
             return response(['message' => 'This user does not exists.'], 404);
         }
         $user->update($userUpdateProfileRequest->all());
-        return response(['message' => 'Changes confirmed'], 201);
+        return response([
+                            'message' => 'Changes confirmed',
+                            'user' => new UserResource($user)
+                        ], 201);
     }
 
     /**
@@ -160,7 +163,8 @@ class UserController extends Controller
         ];
     }
 
-    public function refreshToken(Request $request) {
+    public function refreshToken(Request $request) 
+    {
         if (!$request['refreshToken']) {
             return response(['message' => 'Session expired. Log in again.'], 403);
         }

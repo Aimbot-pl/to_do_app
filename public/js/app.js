@@ -22762,7 +22762,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
     "class": "dropdown-item",
     to: {
-      name: 'user',
+      name: 'preferences',
       params: {
         user: $setup.user.nick
       }
@@ -23041,16 +23041,76 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
             message: 'Your data are the same.'
           });
         } else {
-          commit('stopLogin', {
-            response: {
-              data: {
-                message: 'Update successfull'
+          dispatch('fetchAuth').then(function (res) {
+            axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/v1/user/".concat(state.user.id), {
+              nick: currentUserData.nick,
+              email: currentUserData.email,
+              first_name: currentUserData.first_name,
+              last_name: currentUserData.last_name,
+              gender: currentUserData.gender
+            }, {
+              headers: {
+                Authorization: "Bearer ".concat(js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].get('accessToken'))
               }
-            },
-            errors: null
+            }).then(function (res) {
+              commit('updateUser', res.data);
+              commit('stopLogin', {
+                response: res,
+                errors: null
+              });
+              resolve(res);
+            })["catch"](function (err) {
+              commit('stopLogin', {
+                response: null,
+                errors: err.response
+              });
+              reject(err.response);
+            });
+          }); // commit('stopLogin', {response: {data: {message: 'Update successfull'}}, errors: null});
+          // resolve({message: 'Update successfull'});
+        }
+      });
+    },
+    changePassword: function changePassword(_ref7, currentUserData) {
+      var state = _ref7.state,
+          commit = _ref7.commit,
+          dispatch = _ref7.dispatch;
+      return new Promise(function (resolve, reject) {
+        if (currentUserData.new_password !== currentUserData.new_password_confirmation) {
+          commit('stopLogin', {
+            response: null,
+            errors: {
+              data: {
+                message: 'Passwords are not the same.'
+              }
+            }
           });
-          resolve({
-            message: 'Update successfull'
+          reject({
+            message: 'Passwords are not the same.'
+          });
+        } else {
+          dispatch('fetchAuth').then(function (res) {
+            axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/v1/user/".concat(state.user.id), {
+              old_password: currentUserData.old_password,
+              new_password: currentUserData.new_password
+            }, {
+              headers: {
+                Authorization: "Bearer ".concat(js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].get('accessToken'))
+              }
+            }).then(function (res) {
+              commit('updateUser', res.data);
+              commit('stopLogin', {
+                response: res,
+                errors: null
+              });
+              resolve(res);
+            })["catch"](function (err) {
+              commit('stopLogin', {
+                response: null,
+                errors: err.response
+              });
+              reject(err.response);
+            });
           });
         }
       });
@@ -23139,7 +23199,7 @@ var routes = [{
     }
   }, {
     path: 'preferences',
-    name: 'settings',
+    name: 'preferences',
     component: function component() {
       return __webpack_require__.e(/*! import() */ "resources_js_components_account_Preferences_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/account/Preferences.vue */ "./resources/js/components/account/Preferences.vue"));
     },

@@ -151,10 +151,73 @@ export default {
                     commit('stopLogin', {response: null, errors: { data: { message: 'Your data are the same.'}}} );
                     reject({message: 'Your data are the same.'});
                 } else {
-                    commit('stopLogin', {response: {data: {message: 'Update successfull'}}, errors: null});
-                    resolve({message: 'Update successfull'});
+
+                    dispatch('fetchAuth')
+                    .then((res) => {
+                        axios.put(
+                            `/api/v1/user/${state.user.id}`, 
+                            {
+                                nick: currentUserData.nick,
+                                email: currentUserData.email,
+                                first_name: currentUserData.first_name,
+                                last_name: currentUserData.last_name,
+                                gender: currentUserData.gender
+                            },
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${Cookies.get('accessToken')}`
+                                }
+                            }
+                        )
+                        .then(res => {
+                            commit('updateUser', res.data);
+                            commit('stopLogin', {response: res, errors: null});
+                            resolve(res);
+                        })
+                        .catch(err => {
+                            commit('stopLogin', {response: null, errors: err.response});
+                            reject(err.response);
+                        })
+                    });
+                    // commit('stopLogin', {response: {data: {message: 'Update successfull'}}, errors: null});
+                    // resolve({message: 'Update successfull'});
                 }
             });
+        },
+        changePassword({state, commit, dispatch}, currentUserData) 
+        {
+            return new Promise((resolve, reject) => {
+                if (currentUserData.new_password !== currentUserData.new_password_confirmation) {
+                    commit('stopLogin', {response: null, errors: { data: { message: 'Passwords are not the same.'}}} );
+                    reject({message: 'Passwords are not the same.'});
+                } else {
+                    dispatch('fetchAuth')
+                    .then((res) => {
+                        axios.put(
+                            `/api/v1/user/${state.user.id}`, 
+                            {
+                                old_password: currentUserData.old_password,
+                                new_password: currentUserData.new_password
+                            },
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${Cookies.get('accessToken')}`
+                                }
+                            }
+                        )
+                        .then(res => {
+                            commit('updateUser', res.data);
+                            commit('stopLogin', {response: res, errors: null});
+                            resolve(res);
+                        })
+                        .catch(err => {
+                            commit('stopLogin', {response: null, errors: err.response});
+                            reject(err.response);
+                        })
+                    });
+                }
+                
+            }); 
         }
     }
 };

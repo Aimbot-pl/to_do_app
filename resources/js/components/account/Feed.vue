@@ -1,7 +1,14 @@
 <template>
 	<div v-if="user">
 		<h1>Hello {{ user.nick }}</h1>
-		<router-link :to="{ name: 'user', params: { user: user.nick }}">Go to your profile</router-link>
+		<router-link :to="{ 
+						name: 'profile', 
+						params: { 
+							user: user.nick 
+						}
+					}">
+			Go to your profile
+		</router-link>
 	</div>
 </template>
 

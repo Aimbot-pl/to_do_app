@@ -24,7 +24,7 @@
 				</li>
 
 				<li class="nav-item nav-path">
-					<router-link class="nav-link" :to="{ name: 'settings' }">
+					<router-link class="nav-link" :to="{ name: 'preferences' }">
 						Preferences
 					</router-link>
 				</li>

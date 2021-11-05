@@ -119,7 +119,7 @@
 			</div>
 		</div>
 		<div class="text-center mt-3">
-			<button id="submit-button" type="submit" class="btn btn-success disabled">
+			<button id="submit-button" type="submit" class="btn btn-success">
 				<div id="spinner-button" class=""></div>
 				<span id="submit-text">Save changes</span>	
 			</button>
@@ -171,43 +171,53 @@ export default {
 
 			if (JSON.stringify({...newUserData, id: user.value.id}) === JSON.stringify(user.value)) {
 				letGo = false;
+				errorss.value = {
+					data: {
+						message: 'Your data are the same.'
+					}
+				};
 			} else {
 				letGo = true;
 			}
 
 			if (letGo) {
-			document.querySelector('#spinner-button').classList.add('spinner-border', 'spinner-border-sm');
-			document.querySelector('#submit-button').classList.add('disabled');
-			document.querySelector('#submit-text').textContent = 'Loading';let i = 0;
-			setInterval(() => {
-				if (i >= 3 || errorss.value || responsee.value) {
-					clearInterval();
-				} else {
-					i++;
-					document.querySelector('#submit-text').textContent += '.';
-				}
-			}, 400);
-				setTimeout(() => {
-					store.dispatch('saveChanges', newUserData)
-					.then((res) => {
-						responsee.value = {
-							message: res.message
-						};
-						errorss.value = null;
-					})
-					.catch((err) => {
-						errorss.value = {
-							message: err.message
-						};
-						responsee.value = null;
-					})
-					.finally(() => {
+				document.querySelector('#spinner-button').classList.add('spinner-border', 'spinner-border-sm');
+				document.querySelector('#submit-button').classList.add('disabled');
+				document.querySelector('#submit-text').textContent = 'Loading';
+				let i = 0;
+				setInterval(() => {
+					if (i >= 3 || errorss.value || responsee.value) {
 						clearInterval();
-						document.querySelector('#spinner-button').classList.remove('spinner-border', 'spinner-border-sm');
-						document.querySelector('#submit-button').classList.remove('disabled');
-						document.querySelector('#submit-text').textContent = 'Save changes';
-					});
-				}, 2000);
+					} else {
+						i++;
+						document.querySelector('#submit-text').textContent += '.';
+					}
+				}, 400);
+
+				store.dispatch('saveChanges', newUserData)
+				.then((res) => {
+					responsee.value = res.data;
+					errorss.value = null;
+					localUserData.value = {
+						first_name: res.data.user.first_name,
+						nick: res.data.user.nick,
+						last_name: res.data.user.last_name,
+						email: res.data.user.email,
+						gender: res.data.user.gender
+					}
+				})
+				.catch((err) => {
+					errorss.value = {
+						message: err.message,
+					};
+					responsee.value = null;
+				})
+				.finally(() => {
+					clearInterval();
+					document.querySelector('#spinner-button').classList.remove('spinner-border', 'spinner-border-sm');
+					document.querySelector('#submit-button').classList.remove('disabled');
+					document.querySelector('#submit-text').textContent = 'Save changes';
+				});
 			}
 			
 		};

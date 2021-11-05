@@ -48,7 +48,7 @@
 								<router-link
 									class="dropdown-item"
 									:to="{
-										name: 'user',
+										name: 'preferences',
 										params: { user: user.nick },
 									}"
 									>Preferences</router-link
