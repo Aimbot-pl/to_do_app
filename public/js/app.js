@@ -23076,43 +23076,30 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           commit = _ref7.commit,
           dispatch = _ref7.dispatch;
       return new Promise(function (resolve, reject) {
-        if (currentUserData.new_password !== currentUserData.new_password_confirmation) {
-          commit('stopLogin', {
-            response: null,
-            errors: {
-              data: {
-                message: 'Passwords are not the same.'
-              }
+        dispatch('fetchAuth').then(function (res) {
+          axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/v1/user/".concat(state.user.id, "/change-password"), {
+            old_password: currentUserData.old_password,
+            new_password: currentUserData.new_password,
+            new_password_confirmation: currentUserData.new_password_confirmation
+          }, {
+            headers: {
+              Authorization: "Bearer ".concat(js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].get('accessToken'))
             }
-          });
-          reject({
-            message: 'Passwords are not the same.'
-          });
-        } else {
-          dispatch('fetchAuth').then(function (res) {
-            axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/v1/user/".concat(state.user.id), {
-              old_password: currentUserData.old_password,
-              new_password: currentUserData.new_password
-            }, {
-              headers: {
-                Authorization: "Bearer ".concat(js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].get('accessToken'))
-              }
-            }).then(function (res) {
-              commit('updateUser', res.data);
-              commit('stopLogin', {
-                response: res,
-                errors: null
-              });
-              resolve(res);
-            })["catch"](function (err) {
-              commit('stopLogin', {
-                response: null,
-                errors: err.response
-              });
-              reject(err.response);
+          }).then(function (res) {
+            commit('updateUser', res.data);
+            commit('stopLogin', {
+              response: res,
+              errors: null
             });
+            resolve(res);
+          })["catch"](function (err) {
+            commit('stopLogin', {
+              response: null,
+              errors: err.response
+            });
+            reject(err.response);
           });
-        }
+        });
       });
     }
   }

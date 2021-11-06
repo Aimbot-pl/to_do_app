@@ -187,17 +187,14 @@ export default {
         changePassword({state, commit, dispatch}, currentUserData) 
         {
             return new Promise((resolve, reject) => {
-                if (currentUserData.new_password !== currentUserData.new_password_confirmation) {
-                    commit('stopLogin', {response: null, errors: { data: { message: 'Passwords are not the same.'}}} );
-                    reject({message: 'Passwords are not the same.'});
-                } else {
                     dispatch('fetchAuth')
                     .then((res) => {
                         axios.put(
-                            `/api/v1/user/${state.user.id}`, 
+                            `/api/v1/user/${state.user.id}/change-password`, 
                             {
                                 old_password: currentUserData.old_password,
-                                new_password: currentUserData.new_password
+                                new_password: currentUserData.new_password,
+                                new_password_confirmation: currentUserData.new_password_confirmation
                             },
                             {
                                 headers: {
@@ -215,7 +212,6 @@ export default {
                             reject(err.response);
                         })
                     });
-                }
                 
             }); 
         }
