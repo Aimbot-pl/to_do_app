@@ -157,6 +157,7 @@ export default {
                         axios.put(
                             `/api/v1/user/${state.user.id}`, 
                             {
+                                id: state.user.id,
                                 nick: currentUserData.nick,
                                 email: currentUserData.email,
                                 first_name: currentUserData.first_name,
@@ -178,7 +179,11 @@ export default {
                             commit('stopLogin', {response: null, errors: err.response});
                             reject(err.response);
                         })
-                    });
+                    })
+                    .catch((err) => {
+                        console.log(err.response);
+                        reject(err.response);
+                    })
                     // commit('stopLogin', {response: {data: {message: 'Update successfull'}}, errors: null});
                     // resolve({message: 'Update successfull'});
                 }

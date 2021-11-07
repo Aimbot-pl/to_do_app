@@ -23043,6 +23043,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         } else {
           dispatch('fetchAuth').then(function (res) {
             axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/v1/user/".concat(state.user.id), {
+              id: state.user.id,
               nick: currentUserData.nick,
               email: currentUserData.email,
               first_name: currentUserData.first_name,
@@ -23066,6 +23067,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
               });
               reject(err.response);
             });
+          })["catch"](function (err) {
+            console.log(err.response);
+            reject(err.response);
           }); // commit('stopLogin', {response: {data: {message: 'Update successfull'}}, errors: null});
           // resolve({message: 'Update successfull'});
         }

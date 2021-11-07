@@ -24,6 +24,7 @@ class UserUpdateProfileRequest extends FormRequest
      */
     public function rules()
     {
+        // dd($this->route('id'));
         return [
             'nick' => ['required', 'string', Rule::unique('users', 'nick')->ignore($this->route('user'), 'id'), 'min:6', 'max:20'],
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->route('user'), 'id')],

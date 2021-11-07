@@ -36,7 +36,8 @@ class UserChangePasswordRequest extends FormRequest
                     ->numbers()
                     ->symbols()
                     ->uncompromised()
-            ]
+            ],
+            'new_password_confirmation' => 'required|string'
         ];
     }
 }

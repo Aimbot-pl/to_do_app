@@ -102,7 +102,7 @@ class UserController extends Controller
      */
     public function update(UserUpdateProfileRequest $userUpdateProfileRequest, User $user)
     {
-        $userUpdateProfileRequest->validated();
+        $validate = $userUpdateProfileRequest->validated();
         if (!$user) {
             return response(['message' => 'This user does not exists.'], 404);
         }

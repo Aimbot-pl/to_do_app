@@ -17,7 +17,7 @@ Route::prefix('v1')->group(function(){
     Route::middleware('auth:sanctum')->group(function () {
         Route::put('/user/{user}', [UserController::class, 'update']);
         Route::get('/user/{id}', [UserController::class, 'show']);
-        Route::put('/user/{user}/change-password', [UserController::class, 'changePassword']);
+        Route::put('/user/{id}/change-password', [UserController::class, 'changePassword']);
         Route::post('/logout', [UserController::class, 'logout']);
     });
 

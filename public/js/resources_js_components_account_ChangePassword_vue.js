@@ -24,7 +24,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: 'Change password',
+  name: "Change password",
   setup: function setup() {
     var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.useStore)();
     var errorss = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)({});
@@ -35,9 +35,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     var errors = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)({});
     var localUserData = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)({});
     localUserData.value = {
-      old_password: '',
-      new_password: '',
-      new_password_confirmation: ''
+      old_password: "",
+      new_password: "",
+      new_password_confirmation: ""
     };
 
     var changePassword = function changePassword(credentials) {
@@ -45,19 +45,37 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       errorss.value = null;
       formErrors.value = null;
       formErrorsMessage.value = null;
-      store.dispatch('changePassword', credentials).then(function (res) {
+      formResponseMessage.value = null;
+      document.querySelector('#submit-button').classList.add('disabled');
+      document.querySelector('#spinner-button').classList.add('spinner-border', 'spinner-border-sm');
+      document.querySelector('#submit-text').textContent = 'Submitting';
+      var i = 0;
+      setInterval(function () {
+        if (i >= 3 || formErrorsMessage.value || formResponseMessage.value) {
+          clearInterval();
+        } else {
+          i++;
+          document.querySelector('#submit-text').textContent += '.';
+        }
+      }, 400);
+      store.dispatch("changePassword", credentials).then(function (res) {
         responsee.value = res.data;
         localUserData.value = {
-          old_password: '',
-          new_password: '',
-          new_password_confirmation: ''
+          old_password: "",
+          new_password: "",
+          new_password_confirmation: ""
         };
         formResponseMessage.value = res.data.message;
       })["catch"](function (err) {
         errorss.value = err;
         formErrors.value = err.data.errors;
         formErrorsMessage.value = err.data.message;
-      })["finally"](function () {});
+      })["finally"](function () {
+        clearInterval();
+        document.querySelector('#submit-button').classList.remove('disabled');
+        document.querySelector('#spinner-button').classList.remove('spinner-border', 'spinner-border-sm');
+        document.querySelector('#submit-text').textContent = 'Change password';
+      });
     };
 
     return _objectSpread({
@@ -156,11 +174,16 @@ var _hoisted_15 = {
 
 var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   "class": "text-center mt-3"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
   type: "submit",
-  "class": "btn btn-success",
-  value: "Change password"
-})], -1
+  id: "submit-button",
+  "class": "btn btn-success"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+  id: "spinner-button",
+  "class": "me-2"
+}), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+  id: "submit-text"
+}, "Change password")])], -1
 /* HOISTED */
 );
 
@@ -170,22 +193,22 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return $setup.changePassword($setup.localUserData);
     }, ["prevent"])),
     "class": "mx-auto px-4"
-  }, [$setup.formErrorsMessage ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h3", _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.formErrorsMessage), 1
+  }, [$setup.formErrorsMessage ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h4", _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.formErrorsMessage), 1
   /* TEXT */
-  )) : $setup.formResponseMessage ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h3", _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.formResponseMessage), 1
+  )) : $setup.formResponseMessage ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h4", _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.formResponseMessage), 1
   /* TEXT */
   )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [_hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     type: "password",
     name: "old_password",
     id: "old_password",
-    "class": "form-control",
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["form-control", [$setup.formErrors && $setup.formErrors.old_password ? 'is-invalid' : '', $setup.formErrors && Object.keys($setup.formErrors).length && !$setup.formErrors.old_password ? 'is-valid' : '']]),
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $setup.localUserData.old_password = $event;
     }),
     autofocus: "",
     ref: "old_password"
-  }, null, 512
-  /* NEED_PATCH */
+  }, null, 2
+  /* CLASS */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.localUserData.old_password]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "password-button bi bi-eye-slash",
     type: "button",
@@ -208,13 +231,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     type: "password",
     name: "new_password",
     id: "new_password",
-    "class": "form-control",
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["form-control", [$setup.formErrors && $setup.formErrors.new_password ? 'is-invalid' : '', $setup.formErrors && Object.keys($setup.formErrors).length && !$setup.formErrors.new_password ? 'is-valid' : '']]),
     "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
       return $setup.localUserData.new_password = $event;
     }),
     ref: "new_password"
-  }, null, 512
-  /* NEED_PATCH */
+  }, null, 2
+  /* CLASS */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.localUserData.new_password]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "password-button bi bi-eye-slash",
     type: "button",
@@ -227,7 +250,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   )]), $setup.formErrors && $setup.formErrors.new_password ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_11, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.formErrors.new_password, function (error) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", {
       key: error,
-      "class": "invalid-feedback d-block"
+      "class": "invalid-feedback d-block m-0"
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(error), 1
     /* TEXT */
     );
@@ -237,13 +260,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     type: "password",
     name: "new_password_confirmation",
     id: "new_password_confirmation",
-    "class": "form-control",
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["form-control", [$setup.formErrors && $setup.formErrors.new_password_confirmation ? 'is-invalid' : '', $setup.formErrors && Object.keys($setup.formErrors).length && !$setup.formErrors.new_password_confirmation ? 'is-valid' : '']]),
     "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
       return $setup.localUserData.new_password_confirmation = $event;
     }),
     ref: "new_password_confirmation"
-  }, null, 512
-  /* NEED_PATCH */
+  }, null, 2
+  /* CLASS */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.localUserData.new_password_confirmation]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "password-button bi bi-eye-slash",
     type: "button",
@@ -256,7 +279,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   )]), $setup.formErrors && $setup.formErrors.new_password_confirmation ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_15, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.formErrors.new_password_confirmation, function (error) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", {
       key: error,
-      "class": "invalid-feedback d-block"
+      "class": "invalid-feedback d-block m-0"
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(error), 1
     /* TEXT */
     );
@@ -313,7 +336,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.password-button {\n\t\tleft: calc(100% - 40px);\n\t\tz-index: 1000000000000;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.password-button {\n    left: calc(100% - 70px);\n    z-index: 1000000000000;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

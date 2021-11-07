@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,11 +12,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/cookies', function() {
-    return dd(Cookie::get());
-});
-
 
 Route::get('/{any}', function () {
     return view('index');
