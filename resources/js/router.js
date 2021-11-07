@@ -74,6 +74,11 @@ const routes = [
                         name: 'changePassword',
                         component: () => import('./components/account/ChangePassword.vue'),
                     },
+                    {
+                        path: 'delete-account',
+                        name: 'deleteAccount',
+                        component: () => import('./components/account/DeleteAccount.vue'),
+                    },
                 ]
             },
         ]

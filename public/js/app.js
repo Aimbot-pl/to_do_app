@@ -23206,6 +23206,12 @@ var routes = [{
       component: function component() {
         return __webpack_require__.e(/*! import() */ "resources_js_components_account_ChangePassword_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/account/ChangePassword.vue */ "./resources/js/components/account/ChangePassword.vue"));
       }
+    }, {
+      path: 'delete-account',
+      name: 'deleteAccount',
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ "resources_js_components_account_DeleteAccount_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./components/account/DeleteAccount.vue */ "./resources/js/components/account/DeleteAccount.vue"));
+      }
     }]
   }]
 }, {
@@ -51668,7 +51674,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_views_Home_vue":1,"resources_js_views_Login_vue":1,"resources_js_views_Register_vue":1,"resources_js_views_User_vue":1,"resources_js_components_account_Profile_vue":1,"resources_js_components_account_Preferences_vue":1,"resources_js_components_account_ChangeData_vue":1,"resources_js_components_account_ChangePassword_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_views_Home_vue":1,"resources_js_views_Login_vue":1,"resources_js_views_Register_vue":1,"resources_js_views_User_vue":1,"resources_js_components_account_Profile_vue":1,"resources_js_components_account_Preferences_vue":1,"resources_js_components_account_ChangeData_vue":1,"resources_js_components_account_ChangePassword_vue":1,"resources_js_components_account_DeleteAccount_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};
