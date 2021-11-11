@@ -9,11 +9,11 @@
 			</div>
 		</div>
 
-		<nav class="navbar navbar-expand mb-3">
-			<ul class="navbar-nav border border-2 rounded-2 col-12 px-3 py-1">
-				<li class="nav-item nav-path">
+		<nav aria-label="breadcrumb" class="navbar navbar-expand mb-3">
+			<ol class="border border-2 breadcrumb rounded rounded-3 col-12 p-3">
+				<li class="breadcrumb-item">
 					<router-link
-						class="nav-link"
+						
 						:to="{
 							name: 'profile',
 							params: { user: user.nick },
@@ -23,12 +23,12 @@
 					</router-link>
 				</li>
 
-				<li class="nav-item nav-path">
-					<router-link class="nav-link" :to="{ name: 'preferences' }">
+				<li class="breadcrumb-item">
+					<router-link :to="{ name: 'preferences' }">
 						Preferences
 					</router-link>
 				</li>
-			</ul>
+			</ol>
 		</nav>
 		<router-view> </router-view>
 	</div>

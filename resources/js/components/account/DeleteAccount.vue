@@ -24,6 +24,7 @@
         tabindex="-1"
         aria-labelledby="deleteAccountModalButton"
         aria-hidden="true"
+        ref="deleteAccountModal"
     >
         <div class="modal-dialog">
             <div class="modal-content">
@@ -180,7 +181,8 @@
                     <button
                         type="submit"
                         id="submit-button"
-                        class="btn btn-danger disabled"
+                        class="btn btn-danger"
+                        @click="deleteAccount(localUserData)"
                     >
                         Delete your account
                     </button>
@@ -194,11 +196,15 @@
 import { ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import togglePassword from "../../helpers/TogglePassword";
+import { useRouter } from 'vue-router';
 export default {
     name: "Change password",
     setup() {
         const store = useStore();
+        const router = useRouter();
 
+
+        const deleteAccountModal = ref(null);
         const errorss = ref({});
         const showModal = ref(false);
         const formErrors = ref({});
@@ -214,11 +220,31 @@ export default {
             confirmation: "",
         };
 
+        const deleteAccount = (userData) => {
+            debugger;
+            if (userData.confirm === 'delete my account') {
+                store.dispatch('deleteAccount', userData)
+                .then((res) => {
+                    // bootstrap.Modal.getInstance(deleteAccountModal.value).hide();
+                    router.replace({
+                        name: 'home',
+                        params: {
+                            routeAlert: JSON.stringify({
+                                class: 'success',
+                                message: res.data.message
+                            })
+                        }
+                    })
+                })
+            }
+        }   
+
         const toggleModal = (state) => {
             showModal.value = state;
         };
 
         return {
+            deleteAccountModal,
             localUserData,
             errorss,
             formErrors,
@@ -228,6 +254,7 @@ export default {
             errors,
             toggleModal,
             showModal,
+            deleteAccount,
             ...togglePassword,
         };
     },

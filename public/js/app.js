@@ -22624,6 +22624,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _vue_reactivity__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @vue/reactivity */ "./node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js");
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
 /* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm-bundler.js");
+/* harmony import */ var _vue_runtime_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @vue/runtime-core */ "./node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js");
+
 
 
 
@@ -22634,21 +22636,43 @@ __webpack_require__.r(__webpack_exports__);
     var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_1__.useRouter)();
 
     var logout = function logout() {
-      return store.dispatch('logout');
+      store.dispatch("logout").then(function () {
+        commit('setAlertMessage', {
+          "class": 'warning',
+          message: res.data.message
+        });
+      });
     };
 
     var fetchUser = function fetchUser() {
-      return store.dispatch('fetchUser');
+      return store.dispatch("fetchUser");
     };
 
     var fetchAuth = function fetchAuth() {
-      return store.dispatch('fetchAuth');
+      return store.dispatch("fetchAuth");
     };
 
+    var alertMessage = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.computed)(function () {
+      return store.getters.alertMessage;
+    });
+    var executeAction = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.computed)(function () {
+      return store.state.account.executeAction;
+    });
+    var message = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)({});
+    (0,_vue_runtime_core__WEBPACK_IMPORTED_MODULE_3__.watch)([alertMessage, executeAction], function (curValue, oldValue) {
+      if (curValue[1] == 'clearAlertMessage') {
+        message.value = {};
+        store.commit('clearAction');
+      } else if (curValue[0]) {
+        message.value.message = curValue[0].message;
+        message.value["class"] = curValue[0]["class"];
+        store.commit("clearAlertMessage");
+      }
+    });
     fetchUser().then(function () {
       fetchAuth().then(function (res) {
         router.replace({
-          name: 'user',
+          name: "user",
           params: {
             user: res.data.user.nick
           }
@@ -22660,7 +22684,8 @@ __webpack_require__.r(__webpack_exports__);
       logout: logout,
       user: (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.computed)(function () {
         return store.state.account.user;
-      })
+      }),
+      message: message
     };
   }
 });
@@ -22682,6 +22707,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var _hoisted_1 = {
   key: 0,
+  id: "navigation",
   "class": "navbar navbar-dark bg-dark navbar-expand-md navbar-light bg-light border-bottom border-2 rounded-2 mb-3"
 };
 var _hoisted_2 = {
@@ -22782,7 +22808,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     "class": "dropdown-item",
     href: "#"
-  }, "Logout")])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_view)])], 64
+  }, "Logout")])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.message && $setup.message.message ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+    key: 1,
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["alert", "alert-".concat($setup.message["class"])])
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.message.message), 3
+  /* TEXT, CLASS */
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_view)])], 64
   /* STABLE_FRAGMENT */
   );
 }
@@ -22817,13 +22848,10 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 /*!***********************************!*\
   !*** ./resources/js/bootstrap.js ***!
   \***********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bootstrap */ "./node_modules/bootstrap/dist/js/bootstrap.esm.js");
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
-
+window.bootstrap = __webpack_require__(/*! bootstrap */ "./node_modules/bootstrap/dist/js/bootstrap.esm.js");
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
@@ -22881,7 +22909,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       user: null,
       signingIn: false,
       response: null,
-      errors: null
+      errors: null,
+      alertMessage: null,
+      executeAction: null
     };
   },
   getters: {
@@ -22893,6 +22923,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     },
     responseData: function responseData(state) {
       return state.response && state.response.hasOwnProperty('data') ? state.response.data : null;
+    },
+    alertMessage: function alertMessage(state) {
+      return state.alertMessage;
     }
   },
   mutations: {
@@ -22928,6 +22961,18 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       state.signingIn = false;
       state.response = res && res.hasOwnProperty('response') ? res.response : null;
       state.errors = res && res.hasOwnProperty('errors') ? res.errors : null;
+    },
+    setAlertMessage: function setAlertMessage(state, res) {
+      state.alertMessage = res;
+    },
+    clearAlertMessage: function clearAlertMessage(state) {
+      state.alertMessage = null;
+    },
+    setAction: function setAction(state, action) {
+      state.executeAction = action;
+    },
+    clearAction: function clearAction(state) {
+      state.executeAction = null;
     }
   },
   actions: {
@@ -22987,6 +23032,10 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
               response: null,
               errors: err.response
             });
+            commit('setAlertMessage', {
+              "class": "danger",
+              message: err.response.data.message
+            });
             reject(err.response);
           });
         })["catch"](function (err) {
@@ -23008,14 +23057,20 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
             headers: {
               Authorization: "Bearer ".concat(res.data.accessToken)
             }
-          }).then(function () {
+          }).then(function (res) {
             commit('stopLogin', null, null);
             commit('updateUser', null);
             js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].remove('accessToken');
             js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].remove('refreshToken');
             js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].remove('user');
             _router__WEBPACK_IMPORTED_MODULE_2__["default"].replace({
-              name: 'home'
+              name: 'home',
+              params: {
+                routeAlert: JSON.stringify({
+                  message: res.data.message,
+                  "class": 'warning'
+                })
+              }
             });
           });
         });
@@ -23105,6 +23160,75 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           });
         });
       });
+    },
+    register: function register(_ref8, userData) {
+      var state = _ref8.state,
+          commit = _ref8.commit,
+          dispatch = _ref8.dispatch;
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default().get('/sanctum/csrf-cookie').then(function () {
+          commit('startLogin');
+          axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/v1/register', {
+            first_name: userData.first_name,
+            last_name: userData.last_name,
+            email: userData.email,
+            nick: userData.nick,
+            password: userData.password,
+            password_confirmation: userData.password_confirmation,
+            gender: userData.gender
+          }).then(function (res) {
+            commit('stopLogin', {
+              response: res,
+              errors: null
+            });
+            commit('setAlertMessage', {
+              "class": "success",
+              message: res.data.message
+            });
+            resolve(res);
+          })["catch"](function (err) {
+            commit('stopLogin', {
+              response: null,
+              errors: err.response
+            });
+            reject(err.response);
+          });
+        })["catch"](function (err) {
+          reject(err.response);
+        });
+      });
+    },
+    deleteAccount: function deleteAccount(_ref9, userData) {
+      var state = _ref9.state,
+          commit = _ref9.commit,
+          dispatch = _ref9.dispatch;
+      return new Promise(function (resolve, reject) {
+        dispatch('fetchAuth').then(function (response) {
+          commit('startLogin');
+          axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/v1/delete-account', {}, {
+            headers: {
+              Authorization: "Bearer ".concat(response.data.accessToken)
+            }
+          }).then(function (res) {
+            commit('stopLogin', {
+              response: res,
+              errors: null
+            });
+            commit('updateUser', null);
+            bootstrap.Modal.getInstance(document.querySelector('#deleteAccountModal')).hide();
+            js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].remove('accessToken');
+            js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].remove('refreshToken');
+            js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].remove('user');
+            resolve(res);
+          })["catch"](function (err) {
+            commit('stopLogin', {
+              response: null,
+              errors: err.response
+            });
+            reject(err.response);
+          });
+        });
+      });
     }
   }
 });
@@ -23141,7 +23265,8 @@ var routes = [{
   alias: '/home',
   component: function component() {
     return __webpack_require__.e(/*! import() */ "resources_js_views_Home_vue").then(__webpack_require__.bind(__webpack_require__, /*! ./views/Home.vue */ "./resources/js/views/Home.vue"));
-  }
+  },
+  props: true
 }, {
   path: '/login',
   name: 'login',
@@ -23224,6 +23349,9 @@ var routes = [{
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__.createRouter({
   history: (0,vue_router__WEBPACK_IMPORTED_MODULE_2__.createWebHistory)(),
   routes: routes
+});
+router.beforeEach(function () {
+  _store__WEBPACK_IMPORTED_MODULE_0__["default"].commit('setAction', 'clearAlertMessage');
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (router);
 
@@ -28297,7 +28425,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.password-button {\n\t\tposition: absolute;\n\t\tleft: calc(100% - 30px);\n\t\ttop: .4em;\n\t\tpadding: 5px;\n\t\tz-index: 3;\n\t\tborder: none;\n\t\tbackground-color: inherit;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.password-button {\n    position: absolute;\n    left: calc(100% - 30px);\n    top: 0.4em;\n    padding: 5px;\n    z-index: 3;\n    border: none;\n    background-color: inherit;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

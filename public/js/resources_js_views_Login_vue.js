@@ -39,6 +39,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     });
 
     var login = function login(credentials) {
+      store.commit('setAction', 'clearAlertMessage');
       store.dispatch('login', credentials).then(function (res) {
         if (route.query.redirect) {
           router.replace(route.query.redirect);
@@ -183,6 +184,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, null, 512
   /* NEED_PATCH */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.password]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
     "class": "password-button bi bi-eye-slash",
     ref: "passwordButton",
     onClick: _cache[2] || (_cache[2] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function ($event) {

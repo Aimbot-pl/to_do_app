@@ -8,7 +8,9 @@ export default {
             user: null,
             signingIn: false,
             response: null,
-            errors: null
+            errors: null,
+            alertMessage: null,
+            executeAction: null,
         }
     },
     getters: {
@@ -23,6 +25,10 @@ export default {
         responseData(state)
         {
             return state.response && state.response.hasOwnProperty('data') ? state.response.data : null;
+        },
+        alertMessage(state) 
+        {
+            return state.alertMessage;
         }
     },
     mutations: {
@@ -55,6 +61,22 @@ export default {
             state.signingIn = false;
             state.response = res && res.hasOwnProperty('response') ? res.response : null;
             state.errors = res && res.hasOwnProperty('errors') ? res.errors : null;
+        },
+        setAlertMessage(state, res) 
+        {
+            state.alertMessage = res;
+        },
+        clearAlertMessage(state) 
+        {
+            state.alertMessage = null;
+        },
+        setAction(state, action) 
+        {
+            state.executeAction = action;
+        },
+        clearAction(state) 
+        {
+            state.executeAction = null;
         }
     },
     actions: {
@@ -114,6 +136,7 @@ export default {
                     })
                     .catch(err => {
                         commit('stopLogin', {response: null, errors: err.response});
+                        commit('setAlertMessage', {class: "danger", message: err.response.data.message});
                         reject(err.response);
                     });
                 })
@@ -133,13 +156,21 @@ export default {
                             Authorization: `Bearer ${res.data.accessToken}`
                         }
                     })
-                    .then(() => {
+                    .then((res) => {
                         commit('stopLogin', null, null);
                         commit('updateUser', null);
                         Cookies.remove('accessToken');
                         Cookies.remove('refreshToken');
                         Cookies.remove('user');
-                        router.replace({name: 'home'});
+                        router.replace({
+                            name: 'home',
+                            params: {
+                                routeAlert: JSON.stringify({
+                                    message: res.data.message,
+                                    class: 'warning'
+                                })
+                            }
+                        });
                     })
                 })
             });
@@ -219,6 +250,66 @@ export default {
                     });
                 
             }); 
+        },
+        register({state, commit, dispatch}, userData) 
+        {
+            return new Promise((resolve, reject) => {
+                axios.get('/sanctum/csrf-cookie')
+                .then(() => {
+                    commit('startLogin');
+                    axios.post(
+                        '/api/v1/register',
+                        {
+                            first_name: userData.first_name,
+                            last_name: userData.last_name,
+                            email: userData.email,
+                            nick: userData.nick,
+                            password: userData.password,
+                            password_confirmation: userData.password_confirmation,
+                            gender: userData.gender
+                        }
+                    )
+                    .then((res) => {
+                        commit('stopLogin', {response: res, errors: null});
+                        commit('setAlertMessage', {class: "success", message: res.data.message});
+                        resolve(res);
+                    })
+                    .catch((err) => {
+                        commit('stopLogin', {response: null, errors: err.response});
+                        reject(err.response);
+                    });
+                })
+                .catch(err => {
+                    reject(err.response);
+                })
+            });
+        },
+        deleteAccount({state, commit, dispatch}, userData)
+        {
+            return new Promise((resolve, reject) => {
+                dispatch('fetchAuth')
+                .then(response => {
+                    commit('startLogin');
+                    axios.post('/api/v1/delete-account', {}, {
+                        headers: {
+                            Authorization: `Bearer ${response.data.accessToken}`
+                        }
+                    })
+                    .then(res => {
+                        commit('stopLogin', {response: res, errors: null});
+                        commit('updateUser', null);
+                        bootstrap.Modal.getInstance(document.querySelector('#deleteAccountModal')).hide();
+                        Cookies.remove('accessToken');
+                        Cookies.remove('refreshToken');
+                        Cookies.remove('user');
+                        resolve(res);
+                    })
+                    .catch(err => {
+                        commit('stopLogin', {response: null, errors: err.response});
+                        reject(err.response);
+                    }); 
+                });
+            });
         }
     }
 };

@@ -22,6 +22,7 @@
 				ref="ref_password"
 			/>
 			<button
+				type="button"
 				class="password-button bi bi-eye-slash"
 				ref="passwordButton"
 				@click.prevent="
@@ -59,6 +60,7 @@ export default {
 		const loginErrors = ref(null);
 		const userErrors = computed(() => store.getters.userErrors);
 		const login = (credentials) => {
+			store.commit('setAction', 'clearAlertMessage');
 			store.dispatch('login', credentials)
 				.then((res) => {
 					if (route.query.redirect) {

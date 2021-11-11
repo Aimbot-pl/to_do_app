@@ -14,6 +14,7 @@ const routes = [
         name: 'home',
         alias: '/home',
         component: () => import('./views/Home.vue'),
+        props: true,
     },
     {
         path: '/login',
@@ -95,5 +96,10 @@ const router = new createRouter({
     history: createWebHistory(),
     routes
 });
+
+router.beforeEach(() => {
+    store.commit('setAction', 'clearAlertMessage');
+})
+
 
 export default router

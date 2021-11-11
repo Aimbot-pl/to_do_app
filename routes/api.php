@@ -19,6 +19,7 @@ Route::prefix('v1')->group(function(){
         Route::get('/user/{id}', [UserController::class, 'show']);
         Route::put('/user/{id}/change-password', [UserController::class, 'changePassword']);
         Route::post('/logout', [UserController::class, 'logout']);
+        Route::post('/delete-account', [UserController::class, 'destroy']);
     });
 
     Route::post('/register', [UserController::class, 'register']);

@@ -143,9 +143,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy()
     {
-        //
+        auth()->user()->tokens()->delete();
+        auth()->user()->delete();
+        return response(['message' => 'Account has been deleted.'], 201);
     }
 
     /**
@@ -154,7 +156,7 @@ class UserController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function logout(Request $request)
+    public function logout()
     {
         auth()->user()->tokens()->delete();
         
