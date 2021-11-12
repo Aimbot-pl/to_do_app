@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from './store'
+import Cookies from 'js-cookie';
 const notFound = { template: '<h1>Not found</h1>' }
 
 const routes = [
@@ -13,11 +14,7 @@ const routes = [
         name: 'home',
         alias: '/home',
         component: () => import('./views/Home.vue'),
-    },
-    {
-        path: '/tasks',
-        name: 'tasks',
-        component: () => import('./views/Tasks.vue'),
+        props: true,
     },
     {
         path: '/login',
@@ -34,16 +31,28 @@ const routes = [
         name: 'user',
         component: () => import('./views/User.vue'),
         beforeEnter: (to, from, next) => {
-            store.dispatch('fetchUserData')
+            store.dispatch('fetchUser');
             store.dispatch('fetchAuth')
-            if (store.state.account.accessToken && store.state.account.user && to.params.user === store.state.account.user.nick) {
-                next()
-            } else {
+            .then(res => {
+                if (Cookies.get('accessToken') && JSON.parse(Cookies.get('user')) && to.params.user == JSON.parse(Cookies.get('user')).nick) {
+                    next();
+                } else {
+                    next({
+                        name: 'login',
+                        query: {
+                            redirect: to.fullPath
+                        }
+                    })
+                }
+            })
+            .catch(() => {
                 next({
-                    path: '/login',
-                    query: { redirect: to.fullPath }
+                    name: 'login',
+                    query: {
+                        redirect: to.fullPath
+                    }
                 })
-            }
+            })
         },
         children: [
             {
@@ -53,7 +62,7 @@ const routes = [
             },
             {
                 path: 'preferences',
-                name: 'settings',
+                name: 'preferences',
                 component: () => import('./components/account/Preferences.vue'),
                 children: [
                     {
@@ -66,6 +75,11 @@ const routes = [
                         name: 'changePassword',
                         component: () => import('./components/account/ChangePassword.vue'),
                     },
+                    {
+                        path: 'delete-account',
+                        name: 'deleteAccount',
+                        component: () => import('./components/account/DeleteAccount.vue'),
+                    },
                 ]
             },
         ]
@@ -76,20 +90,16 @@ const routes = [
         name: 'forgotPassword',
         component: { template: '<div>link</div>' },
     },
-    {
-        path: '/test-second',
-        name: 'testSecond',
-        component: () => import('./components/TestSecond.vue'),
-    },
-    {
-        path: '/tasks',
-        component: () => import('./views/Tasks.vue')
-    }
 ];
 
 const router = new createRouter({
     history: createWebHistory(),
     routes
 });
+
+router.beforeEach(() => {
+    store.commit('setAction', 'clearAlertMessage');
+})
+
 
 export default router

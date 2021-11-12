@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Cookies from 'js-cookie';
 import router from '../../router'
 export default {
     state() {
@@ -46,7 +47,8 @@ export default {
             state.loginError = errorMessage;
         },
         logout(state) {
-            sessionStorage.clear()
+            Cookies.remove('accessToken');
+            Cookies.remove('user');
             state.accessToken = null;
             state.user = null;
             state.userId = null;
@@ -76,7 +78,6 @@ export default {
         },
         fetchData(state, user) {
             if (user) {
-                sessionStorage.setItem('user', JSON.stringify(user.data))
                 state.user = { ...user.data }
             } else {
                 state.user = user
@@ -84,22 +85,27 @@ export default {
         },
     },
     actions: {
-        login({ commit, state }, credentials) {
-            commit('loginStart')
-            axios.get('/sanctum/csrf-cookie').then(() => {
-                axios.post("/api/v1/login", {
-                    email: credentials.username,
-                    password: credentials.password,
-                })
+        login({ commit }, credentials) {
+            return new Promise((resolve, reject) => {   
+                commit('loginStart')
+                axios.get('/sanctum/csrf-cookie').then(() => {
+                    axios.post("/api/v1/login", {
+                        email: credentials.username,
+                        password: credentials.password,
+                    })
                     .then((res) => {
-                        sessionStorage.setItem('accessToken', res.data.token);
-                        sessionStorage.setItem('user', JSON.stringify(res.data.user))
+                        Cookies.set('accessToken', res.data.token, {expires: 2/(60*24)}); // 2 minutes
+                        Cookies.set('refreshToken', res.data.refreshToken, {expires: 7});
+                        Cookies.set('user', JSON.stringify(res.data.user));
+                        // sessionStorage.setItem('accessToken', res.data.token);
+                        // sessionStorage.setItem('user', JSON.stringify(res.data.user))
                         commit('loginStop', null)
                         commit('updateAuth', {
-                            accessToken: sessionStorage.getItem('accessToken'),
-                            user: JSON.parse(sessionStorage.getItem('user'))
+                            accessToken: res.data.token,
+                            refreshToken: res.data.refreshToken,
+                            user: res.data.user
                         })
-                        return state.userId
+                        resolve(res.data.user);
                     })
                     .catch((err) => {
                         commit('loginStop', err.response.data.message)
@@ -107,53 +113,67 @@ export default {
                             accessToken: null,
                             user: null
                         })
+                        reject(err);
                     });
+                });
+
             })
         },
         doCleanLoginErrors({ commit }) {
             commit('cleanLoginErrors')
         },
-        logout({ commit }) {
-            commit('logout')
-            setTimeout(() => {
-
+        logout({ commit, state }) {
+            axios({
+                method: 'post',
+                url: '/api/v1/logout',
+                headers: {
+                    Authorization: `Bearer ${state.accessToken}`
+                }
+            }).finally(() => {
+                commit('logout');
                 router.replace({ name: 'home' })
-            }, 1000)
+            });
         },
         fetchAuth({ commit }) {
-            // console.log('updating started')
             commit('updateAuth', {
-                accessToken: sessionStorage.getItem('accessToken'),
-                user: JSON.parse(sessionStorage.getItem('user'))
+                accessToken: Cookies.get('accessToken') || null,
+                user: Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
             })
-            // console.log('updating finished')
         },
-        fetchUserData({ state, commit }) {
+        async fetchUserData({ state, commit }) {
             commit('fetchingStart')
-            // console.log('fetching start')
             if (state.user) {
-
-                axios({
-                    method: 'get',
-                    url: `/api/v1/user/${state.user.id}`,
-                    headers: {
-                        Accept: 'application/json',
-                        Authorization: `Bearer ${state.accessToken}`
-                    }
+                axios.post('/api/v1/refresh-token',{
+                    refresh_token: Cookies.get('refreshToken'),
+                    access_token: Cookies.get('accessToken'),
+                    user_id: state.user.id
                 })
-                    .then((res) => {
-                        // console.log(res.data)
-                        commit('fetchingStop', null)
-                        commit('fetchData', res.data)
-                    })
-                    .catch((err) => {
-                        commit('fetchingStop', err.response.data)
-                        commit('fetchData', null)
-                        if (state.userError.message === "Unauthenticated.") {
-                            router.replace({ path: '/login' })
+                .then((res) => {
+                    Cookies.set('accessToken', res.data.access_token, {expires: 2/(60*24)});
+                    Cookies.set('refreshToken', res.data.refresh_token, {expires: 7});
+                    Cookies.set('user', JSON.stringify(res.data.user));
+                    axios.get(`/api/v1/user/${res.data.user.id}`, {}, {
+                        headers: {
+                            Accept: 'application/json',
+                            Authorization: `Bearer ${res.data.access_token}`
                         }
                     })
-                // .finally(() => console.log('fetching finished'))
+                        .then((res) => {
+                            // console.log(res.data)
+                            commit('fetchingStop', null)
+                            commit('fetchData', res.data)
+                        })
+                        .catch((err) => {
+                            commit('fetchingStop', err.response.data)
+                            commit('fetchData', null)
+                            if (state.userError.message === "Unauthenticated.") {
+                                router.replace({ path: '/login' })
+                            }
+                        });
+                    })
+                    .catch((res) => {
+                        console.log('session expired!', res);
+                    });
             } else {
                 commit('logout')
                 router.replace({ name: 'login' })

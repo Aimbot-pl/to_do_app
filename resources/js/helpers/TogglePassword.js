@@ -1,13 +1,13 @@
 export default {
     togglePassword(input, button) {
-        if (input.type === "password") {
-            input.type = 'text'
-            button.classList.value = 'btn btn-success'
-            button.textContent = 'Hide'
+        if (input.type === 'password') {
+            input.type = 'text';
+            button.classList.add('bi-eye');
+            button.classList.remove('bi-eye-slash');
         } else {
-            input.type = 'password'
-            button.classList.value = 'btn btn-outline-success'
-            button.textContent = 'Show'
+            input.type = 'password';
+            button.classList.add('bi-eye-slash');
+            button.classList.remove('bi-eye');
         }
     }
 }

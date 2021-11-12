@@ -1,5 +1,5 @@
 <template>
-	<form @submit.prevent="signIn({ username, password })">
+	<form @submit.prevent="login({ username, password })">
 		<h2 v-if="loginErrors" class="text-danger">{{ loginErrors }}</h2>
 		<h2 v-if="userErrors" class="text-danger">{{ userErrors.message }}</h2>
 		<label for="username" class="form-label mt-3">Email</label>
@@ -19,17 +19,16 @@
 				class="form-control"
 				id="password"
 				v-model="password"
-				ref="password"
+				ref="ref_password"
 			/>
 			<button
-				class="btn btn-outline-success"
+				type="button"
+				class="password-button bi bi-eye-slash"
 				ref="passwordButton"
 				@click.prevent="
-					togglePassword($refs.password, $refs.passwordButton)
+					togglePassword($refs.ref_password, $refs.passwordButton)
 				"
-			>
-				Show
-			</button>
+			></button>
 		</div>
 
 		<input
@@ -44,43 +43,58 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { computed, ref } from '@vue/reactivity';
+import { useRoute, useRouter } from 'vue-router';
+import { useStore } from "vuex";
 import togglePassword from "../../helpers/TogglePassword";
 export default {
-	name: "LoginComp",
-	data() {
-		return {
-			username: "",
-			password: "",
-		};
-	},
-	created() {
-		if (!this.$route.from) {
-			this.cleanErrors();
+	name: "Login component",
+	setup() {
+		const store = useStore();
+		const route = useRoute();
+		const router = useRouter();
+		
+		const username = ref(null);
+		const password = ref(null);
+
+		const loginErrors = ref(null);
+		const userErrors = computed(() => store.getters.userErrors);
+		const login = (credentials) => {
+			store.commit('setAction', 'clearAlertMessage');
+			store.dispatch('login', credentials)
+				.then((res) => {
+					if (route.query.redirect) {
+						router.replace(route.query.redirect);
+					} else {
+						router.replace({
+							name: "profile",
+							params: { user: res.data.user.nick }
+						});
+					}
+				})
+				.catch((err) => {
+					console.log('login errors in login component', err);
+					// loginErrors.value = err.response
+				});
 		}
-	},
-	computed: {
-		...mapGetters(["loginErrors", "userErrors"]),
-	},
-	methods: {
-		...togglePassword,
-		...mapActions({
-			login: "login",
-			cleanErrors: "doCleanLoginErrors",
-		}),
-		signIn(credentials) {
-			setTimeout(() => {
-				if (this.$route.query.redirect) {
-					this.$router.replace(this.$route.query.redirect);
-				} else {
-					this.$router.replace({
-						name: "user",
-						params: { user: this.$store.state.account.user.nick },
-					});
-				}
-			}, 5000);
-			this.login(credentials);
-		},
-	},
+
+		const cleanErrors = () => store.dispatch('doCleanLoginErrors');
+		
+
+		if (route.from) {
+			cleanErrors();
+		}
+
+		return {
+			username,
+			password,
+			loginErrors,
+			userErrors,
+			...togglePassword,
+			login, 
+			cleanErrors,
+			
+		}
+	}
 };
 </script>

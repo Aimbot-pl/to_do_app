@@ -1,34 +1,29 @@
 <template>
 	<div v-if="user">
 		<h1>Hello {{ user.nick }}</h1>
-		<router-link :to="{ name: 'user', params: { user: user.nick }}">Go to your profile</router-link>
+		<router-link :to="{ 
+						name: 'profile', 
+						params: { 
+							user: user.nick 
+						}
+					}">
+			Go to your profile
+		</router-link>
 	</div>
 </template>
 
 <script>
-import { mapActions, mapGetters} from "vuex";
+import { computed, ref } from '@vue/reactivity';
+import { mapActions, mapGetters, useStore} from "vuex";
+import { onMounted } from '@vue/runtime-core';
 export default {
 	name: "Feed",
-	data() {
+	setup() {
+		const store = useStore();
+		const user = computed(() => store.getters.user);
 		return {
-			user: null
+			user
 		}
-	},
-	created() {
-		this.fetchDatas()
-	},
-	mounted() {
-		this.user = this.userData
-	},
-	computed: {
-		...mapGetters({
-			userData: 'user'
-		}),
-	},
-	methods: {
-		...mapActions({
-			fetchDatas: 'fetchUserData'
-		})
 	}
 };
 </script>

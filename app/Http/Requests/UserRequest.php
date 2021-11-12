@@ -36,7 +36,7 @@ class UserRequest extends FormRequest
                     ->mixedCase()
                     ->numbers()
                     ->symbols()
-                    ->uncompromised()
+                    //->uncompromised()
             ],
             'first_name' => 'required|string|min:2|max:20',
             'last_name' => 'required|string|min:2|max:20',

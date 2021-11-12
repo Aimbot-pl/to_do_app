@@ -9,28 +9,11 @@
 			</div>
 		</div>
 
-		<!-- <nav aria-label="breadcrumb">
-			<ol class="breadcrumb border border-2 rounded-2 col-12 px-3 py-1">
-				<router-link
-					class="nav-link"
-					:to="{
-						name: 'profile',
-						params: { user: user.nick },
-					}"
-				>
-					Profile
-				</router-link>
-				<router-link class="nav-link" :to="{ name: 'settings' }">
-					Preferences
-				</router-link>
-			</ol>
-		</nav> -->
-
-		<nav class="navbar navbar-expand mb-3">
-			<ul class="navbar-nav border border-2 rounded-2 col-12 px-3 py-1">
-				<li class="nav-item nav-path">
+		<nav aria-label="breadcrumb" class="navbar navbar-expand mb-3">
+			<ol class="border border-2 breadcrumb rounded rounded-3 col-12 p-3">
+				<li class="breadcrumb-item">
 					<router-link
-						class="nav-link"
+						
 						:to="{
 							name: 'profile',
 							params: { user: user.nick },
@@ -40,43 +23,31 @@
 					</router-link>
 				</li>
 
-				<li class="nav-item nav-path">
-					<router-link class="nav-link" :to="{ name: 'settings' }">
+				<li class="breadcrumb-item">
+					<router-link :to="{ name: 'preferences' }">
 						Preferences
 					</router-link>
 				</li>
-			</ul>
+			</ol>
 		</nav>
 		<router-view> </router-view>
 	</div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { computed } from '@vue/reactivity';
+import { useStore } from "vuex";
 export default {
-	data() {
+	name: "User component",
+	setup() {
+		const store = useStore();
+		const user = computed(() => store.getters.user);
+		document.title = user.value.nick;
+		
 		return {
-			user: null,
-		};
-	},
-	created() {
-		this.fetchDatas();
-	},
-	mounted() {
-		this.user = this.userData;
-		document.title = this.user.nick;
-	},
-	computed: {
-		...mapGetters({
-			errors: "userErrors",
-			userData: "user",
-		}),
-	},
-	methods: {
-		...mapActions({
-			fetchDatas: "fetchUserData",
-		}),
-	},
+			user
+		}
+	}
 };
 </script>
 
