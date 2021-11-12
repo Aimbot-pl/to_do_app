@@ -23205,7 +23205,10 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       return new Promise(function (resolve, reject) {
         dispatch('fetchAuth').then(function (response) {
           commit('startLogin');
-          axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/v1/delete-account', {}, {
+          axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/v1/delete-account', {
+            email: userData.email,
+            password: userData.password
+          }, {
             headers: {
               Authorization: "Bearer ".concat(response.data.accessToken)
             }

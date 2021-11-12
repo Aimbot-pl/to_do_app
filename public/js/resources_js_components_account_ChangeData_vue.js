@@ -46,8 +46,6 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     var formErrorsMessage = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)(null);
     var formResponse = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)({});
     var formResponseMessage = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)(null);
-    var errorss = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)({});
-    var responsee = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)({});
 
     var checkGender = function checkGender(query) {
       return document.querySelector(query).value === localUserData.value.gender;
@@ -136,10 +134,6 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       formErrors: formErrors,
       formErrorsMessage: formErrorsMessage,
       formResponseMessage: formResponseMessage,
-      responsee: responsee,
-      errorss: errorss,
-      errors: null,
-      response: null,
       closeModal: closeModal,
       user: user,
       saveChanges: saveChanges,

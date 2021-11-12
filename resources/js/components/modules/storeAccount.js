@@ -290,7 +290,10 @@ export default {
                 dispatch('fetchAuth')
                 .then(response => {
                     commit('startLogin');
-                    axios.post('/api/v1/delete-account', {}, {
+                    axios.post('/api/v1/delete-account', {
+                        email: userData.email,
+                        password: userData.password
+                    }, {
                         headers: {
                             Authorization: `Bearer ${response.data.accessToken}`
                         }

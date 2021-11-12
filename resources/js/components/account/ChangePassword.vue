@@ -165,12 +165,9 @@ export default {
     setup() {
         const store = useStore();
 
-        const errorss = ref({});
         const formErrors = ref({});
         const formErrorsMessage = ref(null);
         const formResponseMessage = ref(null);
-        const responsee = ref({});
-        const errors = ref({});
 
         const localUserData = ref({});
         localUserData.value = {
@@ -180,8 +177,6 @@ export default {
         };
 
         const changePassword = (credentials) => {
-            responsee.value = null;
-            errorss.value = null;
             formErrors.value = null;
             formErrorsMessage.value = null;
             formResponseMessage.value = null;
@@ -203,7 +198,6 @@ export default {
             store
                 .dispatch("changePassword", credentials)
                 .then((res) => {
-                    responsee.value = res.data;
                     localUserData.value = {
                         old_password: "",
                         new_password: "",
@@ -212,7 +206,6 @@ export default {
                     formResponseMessage.value = res.data.message;
                 })
                 .catch((err) => {
-                    errorss.value = err;
                     formErrors.value = err.data.errors;
                     formErrorsMessage.value = err.data.message;
                 })
@@ -225,12 +218,9 @@ export default {
         };
         return {
             localUserData,
-            errorss,
             formErrors,
             formErrorsMessage,
             formResponseMessage,
-            responsee,
-            errors,
             changePassword,
             ...togglePassword,
         };

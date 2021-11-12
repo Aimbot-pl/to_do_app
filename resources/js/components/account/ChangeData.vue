@@ -218,9 +218,6 @@ export default {
 		const formResponse = ref({});
         const formResponseMessage = ref(null);
 
-        const errorss = ref({});
-        const responsee = ref({});
-
 		const checkGender = query => {
 			return document.querySelector(query).value === localUserData.value.gender
 		}
@@ -328,10 +325,6 @@ export default {
             formErrors,
             formErrorsMessage,
             formResponseMessage,
-            responsee,
-            errorss,
-            errors: null,
-            response: null,
             closeModal,
             user,
             saveChanges,

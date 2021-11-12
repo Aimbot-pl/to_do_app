@@ -26,7 +26,7 @@
         aria-hidden="true"
         ref="deleteAccountModal"
     >
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Are you sure you want to do this?</h5>
@@ -38,6 +38,9 @@
                     ></button>
                 </div>
                 <div class="modal-body px-0 pt-0">
+                    <div class="alert alert-danger" v-if="alertError">
+                        {{ alertError }}
+                    </div>
                     <div class="alert alert-warning d-flex align-items-center" role="alert">
                         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
                         <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -73,16 +76,8 @@
                                     id="email"
                                     class="form-control"
                                     v-model="localUserData.email"
+                                    ref="emailInput"
                                 />
-                            </div>
-                            <div v-if="formErrors && formErrors.email">
-                                <p
-                                    v-for="error in formErrors.email"
-                                    :key="error"
-                                    class="invalid-feedback d-block m-0"
-                                >
-                                    {{ error }}
-                                </p>
                             </div>
                         </div>
 
@@ -108,18 +103,9 @@
                                             : '',
                                     ]"
                                     v-model="localUserData.confirm"
-                                    ref="confirm"
+                                    ref="confirmInput"
                                 />
-                            </div>
-                            <div v-if="formErrors && formErrors.password">
-                                <p
-                                    v-for="error in formErrors.password"
-                                    :key="error"
-                                    class="invalid-feedback d-block m-0"
-                                >
-                                    {{ error }}
-                                </p>
-                            </div>
+                            </div>  
                         </div>
 
                         <div class="row mb-3">
@@ -182,6 +168,7 @@
                         type="submit"
                         id="submit-button"
                         class="btn btn-danger"
+                        :class="{ disabled: disabledButton }"
                         @click="deleteAccount(localUserData)"
                     >
                         Delete your account
@@ -197,32 +184,56 @@ import { ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import togglePassword from "../../helpers/TogglePassword";
 import { useRouter } from 'vue-router';
+import Cookies from 'js-cookie';
+import { watch } from '@vue/runtime-core';
 export default {
     name: "Change password",
     setup() {
         const store = useStore();
         const router = useRouter();
 
-
         const deleteAccountModal = ref(null);
-        const errorss = ref({});
         const showModal = ref(false);
+
+        const emailInput = ref(null);
+        const confirmInput = ref(null);
+        const passwordInput = ref(null);
         const formErrors = ref({});
+        
+        const alertError = ref(null);
+        
         const formErrorsMessage = ref(null);
         const formResponseMessage = ref(null);
-        const responsee = ref({});
-        const errors = ref({});
 
         const localUserData = ref({});
         localUserData.value = {
             email: "",
             password: "",
-            confirmation: "",
+            confirm: "",
         };
 
+        const disabledButton = ref(null);
+        disabledButton.value = true;
+
+        watch(localUserData.value, (curValue, oldAction) => {
+            if (curValue.email === JSON.parse(Cookies.get('user')).email && curValue.confirm === 'delete my account' && curValue.password) {
+                // debugger;
+                disabledButton.value = false;
+            } else {
+                disabledButton.value = true;
+            }
+        })
+    
         const deleteAccount = (userData) => {
-            debugger;
-            if (userData.confirm === 'delete my account') {
+            document.querySelector('#email').classList.remove('is-invalid');
+            document.querySelector('#confirm').classList.remove('is-invalid');
+            document.querySelector('#password').classList.remove('is-invalid');
+            if (userData.confirm !== 'delete my account') {
+                formErrors.value.confirm = 'Confirmation is not valid';
+            } else if (userData.email !== JSON.parse(Cookies.get('user')).email) {
+                formErrors.value.email = 'Email is not valid';
+            } else {
+                alertError.value = null;
                 store.dispatch('deleteAccount', userData)
                 .then((res) => {
                     // bootstrap.Modal.getInstance(deleteAccountModal.value).hide();
@@ -236,6 +247,14 @@ export default {
                         }
                     })
                 })
+                .catch((err) => {
+                    alertError.value = err.data.message;
+                    localUserData.value.confirm = null;
+                    disabledButton.value = true;
+                    document.querySelector('#email').classList.add('is-invalid');
+                    document.querySelector('#password').classList.add('is-invalid');
+                    document.querySelector('#deleteAccountModal .modal-body').scrollTo(0, 0);
+                });
             }
         }   
 
@@ -245,16 +264,18 @@ export default {
 
         return {
             deleteAccountModal,
+            alertError,
             localUserData,
-            errorss,
+            emailInput,
+            confirmInput,
+            passwordInput,
             formErrors,
             formErrorsMessage,
             formResponseMessage,
-            responsee,
-            errors,
             toggleModal,
             showModal,
             deleteAccount,
+            disabledButton,
             ...togglePassword,
         };
     },

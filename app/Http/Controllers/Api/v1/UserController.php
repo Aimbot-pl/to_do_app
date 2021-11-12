@@ -9,21 +9,10 @@ use App\Http\Requests\UserChangePasswordRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     /**
      * Register new user.
      *
@@ -55,10 +44,15 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
-        $fields = $request->validate([
+        $validator = Validator::make($request->only(['email', 'password']), [
             'email' => 'required|email|max:30',
             'password' => 'required|string|max:60'
         ]);
+
+        if ($validator->fails()) {
+            return response(['message' => 'Incorect email or/and password'], 422);
+        }
+        $fields = $validator->validated();
         $user = User::where('email', $fields['email'])->first();
         $refreshToken = bin2hex(random_bytes(32));
         $user->remember_token = $refreshToken;
@@ -140,13 +134,26 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy()
+    public function destroy(Request $request)
     {
-        auth()->user()->tokens()->delete();
-        auth()->user()->delete();
+        $validator = Validator::make($request->only(['email', 'password']), [
+            'email' => 'required|email|max:30',
+            'password' => 'required|string|max:60'
+        ]);
+        $userNotFoundResponse = ['message' => 'Incorrect email or/and password'];
+        if ($validator->fails()) {
+            return response($userNotFoundResponse, 422);
+        }
+        $fields = $validator->validated();
+        $user = User::where('email', $fields['email'])->first();
+        if (!$user || !password_verify($fields['password'], $user->password)) {
+            return response($userNotFoundResponse, 422);
+        }
+        $user->tokens()->delete();
+        $user->delete();
         return response(['message' => 'Account has been deleted.'], 201);
     }
 

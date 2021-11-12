@@ -27,12 +27,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   name: "Change password",
   setup: function setup() {
     var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.useStore)();
-    var errorss = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)({});
     var formErrors = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)({});
     var formErrorsMessage = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)(null);
     var formResponseMessage = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)(null);
-    var responsee = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)({});
-    var errors = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)({});
     var localUserData = (0,_vue_reactivity__WEBPACK_IMPORTED_MODULE_2__.ref)({});
     localUserData.value = {
       old_password: "",
@@ -41,8 +38,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
 
     var changePassword = function changePassword(credentials) {
-      responsee.value = null;
-      errorss.value = null;
       formErrors.value = null;
       formErrorsMessage.value = null;
       formResponseMessage.value = null;
@@ -59,7 +54,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       }, 400);
       store.dispatch("changePassword", credentials).then(function (res) {
-        responsee.value = res.data;
         localUserData.value = {
           old_password: "",
           new_password: "",
@@ -67,7 +61,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         };
         formResponseMessage.value = res.data.message;
       })["catch"](function (err) {
-        errorss.value = err;
         formErrors.value = err.data.errors;
         formErrorsMessage.value = err.data.message;
       })["finally"](function () {
@@ -80,12 +73,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     return _objectSpread({
       localUserData: localUserData,
-      errorss: errorss,
       formErrors: formErrors,
       formErrorsMessage: formErrorsMessage,
       formResponseMessage: formResponseMessage,
-      responsee: responsee,
-      errors: errors,
       changePassword: changePassword
     }, _helpers_TogglePassword__WEBPACK_IMPORTED_MODULE_0__["default"]);
   }
